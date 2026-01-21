@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+$primary-color: #9b9312;
+$text-color: #000;
+
+.navbar-wrapper {
+  font-family: 'Inter', sans-serif;
+
+  .logo-text {
+    color: $primary-color;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .brand-text {
+    font-weight: 700;
+    font-size: 20px;
+    color: #333;
+  }
+  .for-cart-section{
+    cursor: pointer;
+    a{
+      color: $text-color !important;
+      font-size: 21px;
+      font-weight: 500;
+      &:hover{
+        color: $primary-color !important;
+      }
+    }
+  }
+  .icon-label {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .nav-links {
+    .nav-link {
+      // font-weight: 500;
+      font-family: mulish;
+      color: $text-color !important;
+      padding: 0.25rem 0.75rem;
+
+      &:hover {
+        font-weight: 500;
+        color: $primary-color !important;
+        // text-decoration: underline;
+      }
+
+      &.text-danger {
+        color: #e53935 !important;
+      }
+    }
+
+    .dropdown-menu {
+      font-size: 14px;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f8f9fa;
+      color: $primary-color;
+    }
+  }
+  .blink-animation {
+    animation: blink 1.5s linear infinite;
+  }
+  .blink-animation {
+    animation: glowColor 1.5s infinite alternate;
+  }
+  
+  @keyframes glowColor {
+    from {
+      color: #9b9312!important;  
+      text-shadow: 0 0 5px #9b9312;
+    }
+    to {
+      color: #ff5722!important; 
+      text-shadow: 0 0 10px #ff8a80;
+    }
+  }
+
+}

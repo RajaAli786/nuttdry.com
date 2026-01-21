@@ -1,0 +1,147 @@
+import React, { useEffect, useState } from 'react';
+import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+import { NavLink, Link } from 'react-router-dom';
+
+import { useSelector, useDispatch } from "react-redux";
+import { selectCartCount } from "../../redux/cartSlice";
+import { fetchHeaderSettings } from '../../redux/headerSlice';
+import { fetchMenus, selectMenuTree } from '../../redux/menuSlice';
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+// console.log("BASE_URL:", BASE_URL);
+
+const CustomNavbar = ({ setOpen }) => {
+  const cartCount = useSelector(selectCartCount);
+  const dispatch = useDispatch();
+
+  const { data: headerData, loading: headerLoading } = useSelector((state) => state.header);
+  const menuTree = useSelector(selectMenuTree);
+  const { loading: menusLoading } = useSelector((state) => state.menu);
+  
+
+  useEffect(() => {
+    dispatch(fetchHeaderSettings());
+    dispatch(fetchMenus());
+  }, []);
+  // console.log("Menu Setting:", menus);
+
+
+
+  return (
+
+    <header className="navbar-wrapper border-bottom bg-white">
+      <Container>
+
+        <div className="d-flex justify-content-between align-items-center py-2">
+
+          <div className="d-flex align-items-center gap-2">
+            <i className="fa fa-search"></i>
+            <span>Search</span>
+          </div>
+
+
+          <Navbar.Brand as={Link} to="/"  className="d-flex align-items-center justify-content-center m-0">
+            {/* <span className="logo-text me-1">N</span>
+            <strong className="brand-text">UTTDRY</strong> */}
+            {headerLoading ? (
+              "Loading..."
+            ) : headerData ? (
+              <img
+                src={`${BASE_URL}/${headerData.logo}`}
+                alt="Logo"
+                style={{ height: '50px', width: 'auto' }}
+              />
+            ) : null}
+          </Navbar.Brand>
+
+
+          <div className="d-flex align-items-center gap-4 for-cart-section">
+            <div className="text-center">
+              <NavLink
+                to="/login"
+                className={({ isActive }) =>
+                  "text-decoration-none icon-wrapper " + (isActive ? "active" : "")
+                }
+              >
+                <i className="bi bi-person-fill-down"></i>
+                <div className="icon-label">Account</div>
+              </NavLink>
+            </div>
+            <div className="text-center">
+              <div className='i-wrap' onClick={() => setOpen(true)}>
+                <span style={{ position: "absolute", zIndex: 999, fontSize: "12px", color: "#fff", margin: "6px 6px" }}>{cartCount}</span>
+                <a href="#"><i style={{ position: "relative" }} className="bi bi-cart-fill cart-icon"></i></a>
+              </div>
+              <div className="icon-label">Cart</div>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <Navbar expand="lg" className="pt-0 pb-2">
+          <Container className="p-0">
+            <Navbar.Toggle aria-controls="nav-collapse" />
+            <Navbar.Collapse id="nav-collapse">
+              <nav className="nav-links d-flex flex-column flex-lg-row justify-content-center w-100 gap-2 gap-lg-4 mt-2 mt-lg-0">
+                <div className="container-fluid">
+
+                  <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
+
+                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="nav-links d-flex flex-column flex-lg-row justify-content-center w-100 gap-2 gap-lg-4 mt-2 mt-lg-0 navbar-nav">
+                      {menusLoading ? (
+                        <li className="nav-item">Loading...</li>
+                      ) : (
+                        menuTree.map((menu) => (
+                          <li key={menu.id} className="nav-item">
+                            {menu.submenus && menu.submenus.length > 0 ? (
+                              <NavDropdown
+                                title={menu.title}
+                                id={`nav-dropdown-${menu.id}`}
+                                
+                              >
+                                {menu.submenus.map((submenu) => (
+                                  <NavDropdown.Item
+                                    key={submenu.id}
+                                    as={NavLink}
+                                    to={`/${submenu.slug}`}
+                                  >
+                                    {submenu.title}
+                                  </NavDropdown.Item>
+                                ))}
+                              </NavDropdown>
+                            ) : (
+                              <NavLink
+                                to={`/${menu.slug}`}
+                                className={({ isActive }) =>
+                                  "nav-link " + (isActive ? "active" : "")
+                                }
+                              >
+                                {menu.title}
+                              </NavLink>
+                            )}
+                          </li>
+                        ))
+                      )}
+                      <li className='nav-item'>
+                        <NavLink to="#" className="nav-link text-danger fw-bold blink-animation nav-link">
+                          Deals
+                        </NavLink>
+                      </li>
+                    </ul>
+
+                  </div>
+                </div>
+              </nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+      </Container>
+    </header>
+  );
+};
+
+export default CustomNavbar;

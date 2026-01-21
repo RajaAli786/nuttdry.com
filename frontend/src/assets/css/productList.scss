@@ -1,0 +1,68 @@
+.product-list {
+    padding: 30px 0;
+  
+    .title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  
+    .search-input {
+      max-width: 400px;
+      margin: 0 auto 30px auto;
+      display: block;
+    }
+  
+    .product-card {
+      border-radius: 12px;
+      padding: 10px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+  
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+      }
+  
+      .product-image {
+        height: 180px;
+        object-fit: contain;
+        padding: 10px;
+      }
+  
+      .product-title {
+        font-size: 16px;
+        font-weight: 500;
+        height: 45px;
+        overflow: hidden;
+      }
+  
+      .product-price {
+        font-size: 18px;
+        font-weight: 600;
+        color: #d63384;
+        margin-bottom: 12px;
+      }
+    }
+  
+    /* Skeleton Loader */
+    .product-skeleton {
+      height: 260px;
+      width: 100%;
+      background: linear-gradient(-90deg, #f0f0f0, #e4e4e4, #f0f0f0);
+      background-size: 400% 400%;
+      border-radius: 10px;
+      animation: loading 1.4s ease infinite;
+    }
+  
+    @keyframes loading {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+  }
+  
