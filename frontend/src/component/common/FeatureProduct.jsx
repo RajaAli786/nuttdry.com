@@ -5,6 +5,7 @@ import Cards from "./Cards";
 import { fetchFeaturedProducts } from "../../redux/productSlice";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
+const IMAGE_URL = import.meta.env.VITE_IMAGE_PATH;
 
 const FeatureProduct = () => {
   const dispatch = useDispatch();
@@ -21,8 +22,9 @@ const FeatureProduct = () => {
     content: (
       <Cards
         productId={product.id}
+        slug={product.slug}
         title={product.name}
-        img={`${BASE_URL}/${product.image}`}
+        img={`${IMAGE_URL}/${product.image}`}
         price={product.price}
         offer={product.discount}
         button={[ { label: ( <> <i className="fa fa-cart-arrow-down me-2" /> Add to Cart </> ), color: "success", }, ]}

@@ -6,6 +6,7 @@ import Cards from "./common/Cards";
 import { setPage } from "../redux/productSlice";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
+const IMAGE_URL = import.meta.env.VITE_IMAGE_PATH;
 
 const ProductGrid = () => {
   const dispatch = useDispatch();
@@ -27,8 +28,9 @@ const ProductGrid = () => {
           <Col key={product.id} md={4} className="mb-4">
             <Cards
               productId={product.id}
+              slug={product.slug}
               title={product.name}
-              img={`${BASE_URL}/${product.image}`}
+              img={`${IMAGE_URL}/${product.image}`}
               price={product.price}
               old_price={
                 product.discount > 0

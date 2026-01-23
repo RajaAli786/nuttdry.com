@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { fetchProductByIdAPI } from "../api/products";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
-import { BASE_URL } from "../config";
+import { BASE_URL, IMAGE_URL } from "../config";
 import Layout from "./common/Layout";
 import "../assets/css/ProductDetails.scss";
 
@@ -55,7 +55,7 @@ function ProductDetails() {
         id: product.id,
         name: product.name,
         price: price,
-        img: product.image ? `${BASE_URL}/${product.image}` : "",
+        img: product.image ? `${IMAGE_URL}/${product.image}` : "",
         discount: discount,
         qty: 1,
       })
@@ -89,24 +89,25 @@ function ProductDetails() {
             </li>
           </ol>
         </nav>
+        <hr />
 
-        <div className="row">
+        <div className="row my-5">
 
           {/* Image */}
           <div className="col-md-4 text-center">
             <img
               src={
                 product.image
-                  ? `${BASE_URL}/${product.image}`
+                  ? `${IMAGE_URL}/${product.image}`
                   : "/images/no-image.png"
               }
               alt={product.name}
-              className="img-fluid mb-3 product-img"
+              className="img-fluid mb-3 border product-img"
             />
           </div>
 
           {/* Details */}
-          <div className="col-md-6">
+          <div className="col-md-8">
             <h2 className="fw-bold">{product.name}</h2>
 
             <p className="product-description">

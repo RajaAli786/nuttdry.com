@@ -1,6 +1,13 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from "@reduxjs/toolkit";
 import api from "./services/api";
 
+/* ===============================
+   Async Thunk
+================================ */
 export const fetchMenus = createAsyncThunk(
   "menus/fetchMenus",
   async (_, { rejectWithValue }) => {
@@ -10,31 +17,39 @@ export const fetchMenus = createAsyncThunk(
       });
       return res.data.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || "Something went wrong");
+      return rejectWithValue(
+        err.response?.data || "Something went wrong"
+      );
     }
   }
 );
 
+/* ===============================
+   Initial State
+================================ */
 const initialState = {
-  data: [],         
+  data: [],
   loading: false,
   error: null,
   lastUpdated: null,
 };
 
+/* ===============================
+   Helper: Build Menu Tree
+================================ */
 const buildMenuTree = (menus = []) => {
   if (!Array.isArray(menus)) return [];
 
   const map = {};
   const roots = [];
 
-  // create map
-  menus.forEach(item => {
+  // Create map
+  menus.forEach((item) => {
     map[item.id] = { ...item, submenus: [] };
   });
 
-  // build tree
-  menus.forEach(item => {
+  // Build tree
+  menus.forEach((item) => {
     if (item.parent_id === null) {
       roots.push(map[item.id]);
     } else if (map[item.parent_id]) {
@@ -42,16 +57,20 @@ const buildMenuTree = (menus = []) => {
     }
   });
 
-  // 🔥 sort submenus
-  roots.forEach(menu => {
-    menu.submenus.sort((a, b) => a.sort_order - b.sort_order);
+  // Sort children
+  roots.forEach((menu) => {
+    if (menu.submenus.length) {
+      menu.submenus.sort((a, b) => a.sort_order - b.sort_order);
+    }
   });
 
-  // 🔥 sort parent menus
+  // Sort parents
   return roots.sort((a, b) => a.sort_order - b.sort_order);
 };
 
-
+/* ===============================
+   Slice
+================================ */
 const menuSlice = createSlice({
   name: "menus",
   initialState,
@@ -77,8 +96,17 @@ const menuSlice = createSlice({
   },
 });
 
+/* ===============================
+   Selectors (MEMOIZED ✅)
+================================ */
+export const selectMenusRaw = (state) => state.menu.data;
+
+
 export const selectMenuTree = (state) =>
   buildMenuTree(state.menu.data);
 
+/* ===============================
+   Exports
+================================ */
 export const { forceRefresh } = menuSlice.actions;
 export default menuSlice.reducer;

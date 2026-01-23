@@ -149,5 +149,27 @@ $border-color: #8b830d;
 }
 
 
+.breadcrumb {
+    white-space: normal;
+    // background-color: #e9ecef;
+    // border-radius: .25rem;
+    // flex-wrap: wrap;
+    // padding: .75rem 1rem;
+}
 
-  
+.breadcrumb-item.active {
+    font-weight: 500;
+    color: #555;
+}
+
+.breadcrumb-item.active {
+    max-width: 450px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (max-width: 576px) {
+    .breadcrumb-item.active {
+        max-width: 220px;
+    }
+}

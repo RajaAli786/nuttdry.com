@@ -11,6 +11,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
+const IMAGE_URL = import.meta.env.VITE_IMAGE_PATH;
 
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -34,20 +35,42 @@ const Testimonials = () => {
         </Container>
       <Swiper
         modules={[Pagination, Autoplay]}
-        pagination={{ clickable: true }}
         slidesPerView={3}
-        autoplay={{ delay: 4000 }}
+        // autoplay={{ delay: 4000 }}
         loop={true}
         speed={600}
         spaceBetween={30}
-        
+        pagination={{
+          clickable: true,
+          enabled: false // Disable pagination by default
+        }}
         className="slider"
+        breakpoints={{
+          0: {
+            slidesPerView: 1, // mobile
+            pagination: {
+              enabled: false // mobile
+            }
+          },
+          640: {
+            slidesPerView: 1,
+          },
+          768: {
+            slidesPerView: 2, // tablet
+          },
+          1024: {
+            slidesPerView: 3, // desktop
+            pagination: {
+              enabled: true // desktop
+            }
+          },
+        }}
       >
         {testimonials.map((item, index) => (
           <SwiperSlide className="" key={index}>
             <div className="slide-col">
               <div className="content">
-                <p>{item.message}</p>
+                <p style={{height:'200px'}}>{item.message}</p>
                 <h2>{item.name}</h2>
                 <p>{item.designation}</p>
 
@@ -64,7 +87,7 @@ const Testimonials = () => {
 
               </div>
               <div className="hero">
-                <img src={`${BASE_URL}/${item.image}`} alt={item.name} />
+                <img src={`${IMAGE_URL}/${item.image}`} alt={item.name} />
               </div>
             </div> 
           </SwiperSlide>

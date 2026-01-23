@@ -9,6 +9,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 const BASE_URL = import.meta.env.VITE_API_URL;
+const IMAGE_URL = import.meta.env.VITE_IMAGE_PATH;
 
 
 const SuperFlowSwiper = () => {
@@ -30,12 +31,46 @@ const SuperFlowSwiper = () => {
       loop={true}
       zoom={true}
       className="mySwiper"
+      breakpoints={{
+        0: {
+          pagination: {
+            enabled: false // mobile
+          },
+          navigation:{
+            enabled: false
+          }
+        },
+        640: {
+          pagination: {
+            enabled: false // mobile
+          },
+          navigation:{
+            enabled: false
+          }
+        },
+        768: {
+          pagination: {
+            enabled: false // mobile
+          },
+          navigation:{
+            enabled: false
+          }
+        },
+        1024: {
+          pagination: {
+            enabled: true // desktop
+          },
+          navigation:{
+            enabled: true
+          }
+        },
+      }}
     >
       {sliders.map(({ image, title, subtitle }, index) => (
         <SwiperSlide key={index} style={{ position: 'relative' }}>
           <div className="zoom-slide-wrapper">
             <img
-              src={`${BASE_URL}/${image}`}
+              src={`${IMAGE_URL}/${image}`}
               alt={title}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />

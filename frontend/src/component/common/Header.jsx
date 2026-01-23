@@ -8,7 +8,7 @@ import { fetchHeaderSettings } from '../../redux/headerSlice';
 import { fetchMenus, selectMenuTree } from '../../redux/menuSlice';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-// console.log("BASE_URL:", BASE_URL);
+const IMAGE_URL = import.meta.env.VITE_IMAGE_PATH;
 
 const CustomNavbar = ({ setOpen }) => {
   const cartCount = useSelector(selectCartCount);
@@ -17,7 +17,7 @@ const CustomNavbar = ({ setOpen }) => {
   const { data: headerData, loading: headerLoading } = useSelector((state) => state.header);
   const menuTree = useSelector(selectMenuTree);
   const { loading: menusLoading } = useSelector((state) => state.menu);
-  
+
 
   useEffect(() => {
     dispatch(fetchHeaderSettings());
@@ -40,16 +40,16 @@ const CustomNavbar = ({ setOpen }) => {
           </div>
 
 
-          <Navbar.Brand as={Link} to="/"  className="d-flex align-items-center justify-content-center m-0">
+          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center justify-content-center m-0">
             {/* <span className="logo-text me-1">N</span>
             <strong className="brand-text">UTTDRY</strong> */}
             {headerLoading ? (
               "Loading..."
             ) : headerData ? (
               <img
-                src={`${BASE_URL}/${headerData.logo}`}
+                src={`${IMAGE_URL}/${headerData.logo}`}
                 alt="Logo"
-                style={{ height: '50px', width: 'auto' }}
+                style={{ width: '90px' }}
               />
             ) : null}
           </Navbar.Brand>
@@ -81,64 +81,55 @@ const CustomNavbar = ({ setOpen }) => {
 
         <Navbar expand="lg" className="pt-0 pb-2">
           <Container className="p-0">
+
+            {/* ✅ Only ONE toggle */}
             <Navbar.Toggle aria-controls="nav-collapse" />
+
             <Navbar.Collapse id="nav-collapse">
               <nav className="nav-links d-flex flex-column flex-lg-row justify-content-center w-100 gap-2 gap-lg-4 mt-2 mt-lg-0">
-                <div className="container-fluid">
+                <ul className="nav-links d-flex flex-column flex-lg-row justify-content-center w-100 gap-2 gap-lg-4 mt-2 mt-lg-0 navbar-nav">
 
-                  <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                  </button>
-
-                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="nav-links d-flex flex-column flex-lg-row justify-content-center w-100 gap-2 gap-lg-4 mt-2 mt-lg-0 navbar-nav">
-                      {menusLoading ? (
-                        <li className="nav-item">Loading...</li>
-                      ) : (
-                        menuTree.map((menu) => (
-                          <li key={menu.id} className="nav-item">
-                            {menu.submenus && menu.submenus.length > 0 ? (
-                              <NavDropdown
-                                title={menu.title}
-                                id={`nav-dropdown-${menu.id}`}
-                                
+                  {menusLoading ? (
+                    <li className="nav-item">Loading...</li>
+                  ) : (
+                    menuTree.map((menu) => (
+                      <li key={menu.id} className="nav-item">
+                        {menu.submenus && menu.submenus.length > 0 ? (
+                          <NavDropdown
+                            title={menu.title}
+                            id={`nav-dropdown-${menu.id}`}
+                          >
+                            {menu.submenus.map((submenu) => (
+                              <NavDropdown.Item
+                                key={submenu.id}
+                                as={NavLink}
+                                to={`/${submenu.slug}`}
                               >
-                                {menu.submenus.map((submenu) => (
-                                  <NavDropdown.Item
-                                    key={submenu.id}
-                                    as={NavLink}
-                                    to={`/${submenu.slug}`}
-                                  >
-                                    {submenu.title}
-                                  </NavDropdown.Item>
-                                ))}
-                              </NavDropdown>
-                            ) : (
-                              <NavLink
-                                to={`/${menu.slug}`}
-                                className={({ isActive }) =>
-                                  "nav-link " + (isActive ? "active" : "")
-                                }
-                              >
-                                {menu.title}
-                              </NavLink>
-                            )}
-                          </li>
-                        ))
-                      )}
-                      <li className='nav-item'>
-                        <NavLink to="#" className="nav-link text-danger fw-bold blink-animation nav-link">
-                          Deals
-                        </NavLink>
+                                {submenu.title}
+                              </NavDropdown.Item>
+                            ))}
+                          </NavDropdown>
+                        ) : (
+                          <NavLink
+                            to={`/${menu.slug}`}
+                            className={({ isActive }) =>
+                              "nav-link " + (isActive ? "active" : "")
+                            }
+                          >
+                            {menu.title}
+                          </NavLink>
+                        )}
                       </li>
-                    </ul>
+                    ))
+                  )}
 
-                  </div>
-                </div>
+                </ul>
               </nav>
             </Navbar.Collapse>
+
           </Container>
         </Navbar>
+
       </Container>
     </header>
   );

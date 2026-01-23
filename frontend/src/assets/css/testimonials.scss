@@ -1,190 +1,136 @@
-// 🎨 Font Import
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 
-// 🌈 Variables
-$font-family: "Poppins", sans-serif;
-$text-color: #4d4352;
+$font: "Poppins", sans-serif;
+$text: #4d4352;
 $white: #fff;
-$blur: 4.5px;
-$transition: all 0.3s ease;
-$gradient-bg: radial-gradient(at 40% 20%, rgb(255, 184, 122) 0px, transparent 50%),
-  radial-gradient(at 80% 0%, rgb(31, 221, 255) 0px, transparent 50%),
-  radial-gradient(at 0% 50%, rgb(255, 219, 222) 0px, transparent 50%),
-  radial-gradient(at 80% 50%, rgb(255, 133, 173) 0px, transparent 50%),
-  radial-gradient(at 0% 100%, rgb(255, 181, 138) 0px, transparent 50%),
-  radial-gradient(at 80% 100%, rgb(107, 102, 255) 0px, transparent 50%),
-  radial-gradient(at 0% 0%, rgb(255, 133, 167) 0px, transparent 50%);
+$blur: 6px;
 
+* {
+  box-sizing: border-box;
+  font-family: $font;
+}
 
-  .slide-row {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    width: 100%;
-    padding: 0px 50px;
-    background-image: radial-gradient(
-        at 40% 20%,
-        rgb(255, 184, 122) 0px,
-        transparent 50%
-      ),
-      radial-gradient(at 80% 0%, rgb(31, 221, 255) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, rgb(255, 219, 222) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, rgb(255, 133, 173) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgb(255, 181, 138) 0px, transparent 50%),
-      radial-gradient(at 80% 100%, rgb(107, 102, 255) 0px, transparent 50%),
-      radial-gradient(at 0% 0%, rgb(255, 133, 167) 0px, transparent 50%);
-    background-repeat: no-repeat;
-  }
-  
+/* SECTION */
+.slide-row {
+  padding: 1px 40px 30px;
+  background-image:
+    radial-gradient(at 40% 20%, #ffb87a 0px, transparent 50%),
+    radial-gradient(at 80% 0%, #1fddff 0px, transparent 50%),
+    radial-gradient(at 0% 50%, #ffdbde 0px, transparent 50%),
+    radial-gradient(at 80% 50%, #ff85ad 0px, transparent 50%),
+    radial-gradient(at 0% 100%, #ffb58a 0px, transparent 50%),
+    radial-gradient(at 80% 100%, #6b66ff 0px, transparent 50%);
+}
 
-// 🎞️ Slider
+/* SWIPER */
 .slider {
   width: 100%;
-  overflow: hidden;
+  padding-bottom: 100px; // 🔥 pagination space
 }
 
-// 🎬 Each Slide
+/* CARD */
 .slide-col {
-  position: relative;
-  width: 450px;
-  height: 400px;
+  max-width: 420px;
   margin: auto;
+  position: relative;
+}
 
-  .hero {
-    position: absolute;
-    bottom: 90px;
-    right: 20px;
-    width: 80px;
-    z-index: 999;
-    // height: 100%;
+/* CONTENT */
+.content {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur($blur);
+  border-radius: 18px;
+  padding: 35px 30px 60px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 
-    img {
-      height: 100%;
-      width: 100%;
-      border-radius: 10px;
-      object-fit: cover;
-      pointer-events: none;
-      user-select: none;
-      border: 2px solid #fff;
-      padding: 4px;
-      border-radius: 50px;
-    }
+  p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: $text;
   }
 
-  .content {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    // width: 520px;
-    // height: 270px;
-    color: $text-color;
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur($blur);
-    -webkit-backdrop-filter: blur($blur);
-    border-radius: 10px;
-    padding: 45px;
-    z-index: 2;
-    user-select: none;
-    .rating {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 12px;
-    }
-  
-    .star {
-      font-size: 16px;
-      color: #d1d1d1;
-      transition: transform 0.2s ease, color 0.2s ease;
-    }
-  
-    .star.active {
-      color: #f5c518; // golden star
-    }
-    p {
-      font-size: 1rem;
-      font-weight: 400;
-      line-height: 1.3;
-    }
-
-    h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 35px;
-      color: $text-color;
-    }
+  h2 {
+    margin-top: 18px;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 }
 
-// ⚪ Swiper Pagination
+/* RATING */
+.rating {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  margin-bottom: 25px; // 🔥 pagination safe
+}
+
+.star {
+  font-size: 16px;
+  color: #d1d1d1;
+
+  &.active {
+    color: #f5c518;
+  }
+}
+
+/* AVATAR */
+.hero {
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 72px;
+  z-index: 5;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid $white;
+    object-fit: cover;
+  }
+}
+
+/* PAGINATION */
+.swiper-pagination {
+  bottom: 20px !important;
+}
+
 .swiper-pagination-bullet {
-  background: $white !important;
-  opacity: 0.6;
-  transition: $transition;
+  background: $white;
+  opacity: 0.5;
 
   &-active {
-    width: 30px;
-    border-radius: 10px;
-    background: $white !important;
+    width: 28px;
+    border-radius: 12px;
     opacity: 1;
   }
 }
 
-// 📱 Responsive Design
-@media (max-width: 850px) {
-  main {
-    width: 500px;
+/* MOBILE FIX */
+@media (max-width: 768px) {
+  .slide-row {
+    padding: 1px 0px 0px;
   }
 
-  .slide-col {
-    width: 500px;
-    height: 250px;
-
-    .hero img {
-      width: 200px;
-    }
+  .slider {
+    padding-bottom: 50px;
 
     .content {
-      width: 320px;
-      height: 200px;
-      padding: 20px;
-
-      p {
-        font-size: 0.9rem;
-      }
-
-      h2 {
-        font-size: 1.2rem;
-        margin-top: 20px;
-      }
+      margin: 0px 15px;
     }
   }
-}
 
-@media (max-width: 550px) {
-  main {
-    width: 300px;
+  .hero {
+    bottom: -28px;
   }
 
-  .slide-col {
-    height: 300px;
-
-    .hero {
-      top: 60%;
-      height: 100px;
-      z-index: 5;
-
-      img {
-        width: 100px;
-      }
-    }
-
-    .content {
-      width: 300px;
-    }
+  .swiper-pagination {
+    position: relative;
+    margin-top: 35px;
+    bottom: 0 !important;
   }
 }

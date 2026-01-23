@@ -8,6 +8,8 @@ import Layout from "./common/Layout";
 import FilterSidebar from "./FilterSidebar";
 import ProductGrid from "./ProductGrid";
 
+
+
 import {
   fetchProducts,
   setTop,
@@ -44,7 +46,7 @@ const ProductList = ({defaultSlug}) => {
      HANDLE SLUG FILTER
   ========================= */
   useEffect(() => {
-    console.log("RAW SLUG →", slug);
+    // console.log("RAW SLUG →", slug);
     // console.log("CATEGORIES LENGTH →", categories.length);
     if (!slug) return;
 
@@ -60,13 +62,13 @@ const ProductList = ({defaultSlug}) => {
     }
 
     if (slug === "featured-products") {
-      console.log("DISPATCH FEATURE PRODUCTS");
+      // console.log("DISPATCH FEATURE PRODUCTS");
       dispatch(setFeatured(1));
       return;
     }
 
     if (slug === "new-products") {
-      console.log("DISPATCH NEW PRODUCTS");
+      // console.log("DISPATCH NEW PRODUCTS");
       dispatch(setNew(1));
       return;
     }
@@ -76,25 +78,20 @@ const ProductList = ({defaultSlug}) => {
       dispatch(setCategory(cat.id));
     }
   }, [slug, categories, dispatch]);
-
-  
-  /* =========================
-     FETCH PRODUCTS (ONLY ONE API)
-  ========================= */
   
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch, page, limit, search, category, priceRange, sort, is_top, is_featured, is_new]);
 
-  useEffect(() => {
-    console.log("FILTERS →", {
-      is_top,
-      is_featured,
-      is_new,
-      category,
-    });
-  }, [is_top, is_featured, is_new, category]);
+  // useEffect(() => {
+  //   console.log("FILTERS →", {
+  //     is_top,
+  //     is_featured,
+  //     is_new,
+  //     category,
+  //   });
+  // }, [is_top, is_featured, is_new, category]);
 
   return (
     <Layout>

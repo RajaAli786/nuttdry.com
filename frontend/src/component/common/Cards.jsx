@@ -6,10 +6,18 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartSlice";
 
-const Cards = ({productId, title, description, price, old_price, offer, button = null, img = null }) => {
+const Cards = ({productId, slug, title, description, price, old_price, offer, button = null, img = null }) => {
 
   const dispatch = useDispatch();
   const offerValue = Number(offer) || 0;
+
+  const oldPrice =
+    old_price
+      ? Number(old_price)
+      : offerValue > 0
+        ? Math.round(price / (1 - offerValue / 100))
+        : null;
+
   return (
     <Container className=" d-flex justify-content-center">
       <Card style={{ width: '100%' }} className="shadow-sm">
@@ -18,7 +26,7 @@ const Cards = ({productId, title, description, price, old_price, offer, button =
             {offerValue}% OFF
           </div>)}
         <Card.Body className="pb-3 text-center">
-        <Link to={`/product/${productId}`} className="text-decoration-none text-dark">
+        <Link to={`/product/${slug}`} className="text-decoration-none text-dark">
             {img && (
               <div className="card-img overflow-hidden">
                 <Card.Img
@@ -47,9 +55,9 @@ const Cards = ({productId, title, description, price, old_price, offer, button =
                   ₹{price}
                   &nbsp;
                   
-                  {old_price && (
+                  {oldPrice && (
                     <small className="fw-bold text-muted text-decoration-line-through  mb-0" style={{ fontSize: '0.8rem' }}>
-                      ₹{old_price}
+                      ₹{oldPrice}
                     </small>
                   )}
                 </span>

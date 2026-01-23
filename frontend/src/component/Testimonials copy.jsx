@@ -41,6 +41,20 @@ const Testimonials = () => {
         spaceBetween={30}
 
         className="slider"
+        breakpoints={{
+          0: {
+            slidesPerView: 1, // mobile
+          },
+          640: {
+            slidesPerView: 1,
+          },
+          768: {
+            slidesPerView: 2, // tablet
+          },
+          1024: {
+            slidesPerView: 3, // desktop
+          },
+        }}
       >
         {testimonials.map((item, index) => (
           <SwiperSlide key={index}>

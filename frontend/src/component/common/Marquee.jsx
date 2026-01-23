@@ -1,32 +1,52 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from "react-redux";
+import { fetchHeaderSettings } from '../../redux/headerSlice';
 
 const TopMarquee = () => {
+  const dispatch = useDispatch();
+    const { data: headerData, loading } = useSelector(
+      (state) => state.header
+    );
+  
+    useEffect(() => {
+      dispatch(fetchHeaderSettings());
+    }, [dispatch]);
+  
+    if (loading || !headerData?.animated_title_1) return null;
   return (
     <>
     <div className="marquee">
-        <span>
-          Easy Return & Refund &nbsp; | &nbsp; Free Shipping On Orders Above
-          Rs.999 &nbsp; | &nbsp; COD Available &nbsp; | &nbsp; Easy Return &
-          Refund &nbsp; | &nbsp; Free Shipping On Orders Above Rs.999 &nbsp; |
-          &nbsp; COD Available
-        </span>
+        <span
+          className="mb-0  fs-7"
+          dangerouslySetInnerHTML={{
+            __html: headerData.animated_title_1,
+          }}
+        />
+        
       </div>
     </>
   )
 }
 const MiddleMarquee = () => {
+  const dispatch = useDispatch();
+    const { data: headerData, loading } = useSelector(
+      (state) => state.header
+    );
+  
+    useEffect(() => {
+      dispatch(fetchHeaderSettings());
+    }, [dispatch]);
+  
+    if (loading || !headerData?.animated_title_2) return null;
   return (
     <>
     <div className="marquee">
-        <span>Quality You Can Trust &nbsp; | &nbsp
-        Customer Support That Cares &nbsp; | &nbsp
-        Quality You Can Trust &nbsp; | &nbsp
-        Customer Support That Cares &nbsp; | &nbsp
-        Quality You Can Trust &nbsp; | &nbsp
-        Customer Support That Cares &nbsp; | &nbsp
-        Quality You Can Trust &nbsp; | &nbsp
-        Customer Support That Cares &nbsp; | &nbsp
-        Quality You Can Trust &nbsp; | &nbsp</span>
+      <span
+          className="mb-0  fs-7"
+          dangerouslySetInnerHTML={{
+            __html: headerData.animated_title_2,
+          }}
+        />
       </div>
     </>
   )
