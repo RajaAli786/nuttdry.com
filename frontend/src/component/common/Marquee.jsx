@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { fetchHeaderSettings } from '../../redux/headerSlice';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import SwiperCore from "swiper";
+import { Autoplay } from 'swiper/modules';
+
+import 'swiper/css';
+SwiperCore.use([Autoplay]);
 
 const TopMarquee = () => {
   const dispatch = useDispatch();
@@ -15,14 +22,31 @@ const TopMarquee = () => {
     if (loading || !headerData?.animated_title_1) return null;
   return (
     <>
-    <div className="marquee">
-        <span
-          className="mb-0  fs-7"
-          dangerouslySetInnerHTML={{
-            __html: headerData.animated_title_1,
-          }}
-        />
-        
+    <div className="marquee-wrapper">
+        <div className="container">
+        <Swiper
+        loop={true}
+        slidesPerView="auto"
+        spaceBetween={50}
+        speed={10000}               
+        autoplay={{
+          delay: 5000,               
+          disableOnInteraction: false,
+        }}
+        freeMode={true}
+        allowTouchMove={false}
+      >
+        {[...Array(5)].map((_, i) => (
+          <SwiperSlide key={i} style={{ width: "auto" }}>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: headerData.animated_title_1,
+              }}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+        </div>
       </div>
     </>
   )
@@ -40,13 +64,31 @@ const MiddleMarquee = () => {
     if (loading || !headerData?.animated_title_2) return null;
   return (
     <>
-    <div className="marquee">
-      <span
-          className="mb-0  fs-7"
-          dangerouslySetInnerHTML={{
-            __html: headerData.animated_title_2,
-          }}
-        />
+    <div className="marquee-wrapper">
+        <div className="container">
+        <Swiper
+        loop={true}
+        slidesPerView="auto"
+        spaceBetween={50}
+        speed={20000}               
+        autoplay={{
+          delay: 5000,               
+          disableOnInteraction: false,
+        }}
+        freeMode={true}
+        allowTouchMove={false}
+      >
+        {[...Array(5)].map((_, i) => (
+          <SwiperSlide key={i} style={{ width: "auto" }}>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: headerData.animated_title_2,
+              }}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+        </div>
       </div>
     </>
   )

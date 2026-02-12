@@ -49,6 +49,11 @@ $text-color: #000;
       &.text-danger {
         color: #e53935 !important;
       }
+      &.active {
+        font-weight: 500;
+        color: $primary-color !important;
+        // text-decoration: underline;
+      }
     }
 
     .dropdown-menu {

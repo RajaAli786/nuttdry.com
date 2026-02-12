@@ -1,115 +1,110 @@
-import React from 'react';
-import { Card, Button, Container } from 'react-bootstrap';
+import React from "react";
+import { Card, Button, Container } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartSlice";
 
-const Cards = ({productId, slug, title, description, price, old_price, offer, button = null, img = null }) => {
-
+import "../../assets/css/card.scss";
+const Cards = ({
+  productId,
+  slug,
+  title,
+  description,
+  price,
+  old_price,
+  tags,          // eg: "SELLING FAST"
+  img,
+}) => {
   const dispatch = useDispatch();
-  const offerValue = Number(offer) || 0;
 
-  const oldPrice =
-    old_price
-      ? Number(old_price)
-      : offerValue > 0
-        ? Math.round(price / (1 - offerValue / 100))
-        : null;
+  const originalPrice = Number(old_price) || 0;
+  const finalPrice = Number(price) || 0;
+
+  let discountPercent = 0;
+  if (originalPrice > finalPrice && originalPrice > 0) {
+    discountPercent = Math.round(
+      ((originalPrice - finalPrice) / originalPrice) * 100
+    );
+  }
 
   return (
-    <Container className=" d-flex justify-content-center">
-      <Card style={{ width: '100%' }} className="shadow-sm">
-        {offerValue >0 && (
-          <div className="offer-badge position-absolute bg-danger text-white p-1 rounded-top-right" style={{ top: '10px', right: '10px', zIndex: 1 }}>
-            {offerValue}% OFF
-          </div>)}
-        <Card.Body className="pb-3 text-center">
-        <Link to={`/product/${slug}`} className="text-decoration-none text-dark">
-            {img && (
-              <div className="card-img overflow-hidden">
-                <Card.Img
-                  variant="top"
-                  src={img}
-                  alt={title || 'Product Image'}
-                  className="img-fluid"
-                />
-              </div>
-            )}
+    <Container className="d-flex justify-content-center p-0">
+      <Card className="product-card shadow-sm position-relative">
 
-            {title && <Card.Title className="my-3">{title}</Card.Title>}
+        {/* OFFER BADGE */}
+        {tags && tags!=0 && (
+          <span className="selling-fast">
+            {tags}
+          </span>
+        )}
+
+        {/* IMAGE */}
+        <Link to={`/product/${slug}`} className="text-decoration-none">
+          <div className="product-img">
+            <Card.Img src={img} alt={title} />
+          </div>
+        </Link>
+
+        <Card.Body className="text-center">
+
+          {/* TITLE */}
+          <Link to={`/product/${slug}`} className="text-decoration-none text-dark">
+            <Card.Title className="product-title" style={{cursor:'pointer'}} title={title || ""}>
+              {title}
+            </Card.Title>
           </Link>
 
-          {description && <Card.Text>{description}</Card.Text>}
+          {/* DESCRIPTION */}
+          {description && (
+            <p className="product-desc">{description}</p>
+          )}
 
-         {price && (<hr style={{ opacity: 0.1 }} />)}
-         
-          {(price || button) && (
-            
-            <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-3">
-               
-              {/* Price */}
-              {price && (
-                <span className="fw-bold fs-6 mb-0">
-                  ₹{price}
-                  &nbsp;
-                  
-                  {oldPrice && (
-                    <small className="fw-bold text-muted text-decoration-line-through  mb-0" style={{ fontSize: '0.8rem' }}>
-                      ₹{oldPrice}
-                    </small>
-                  )}
-                </span>
-              )}
-              
-            
-              {/* Buttons */}
-              {button && (
-                Array.isArray(button) ? (
-                  button.map((btn, index) => {
-                    if (typeof btn === 'object') {
-                      return (
-                        <Button
-                          key={index}
-                          variant={btn.color || 'primary'}
-                          className="mx-1 "
-                          onClick={() => {
-                            dispatch(
-                              addToCart({
-                                id: productId, 
-                                name: title,
-                                price: price,
-                                img: img,
-                                discount: Number(offer || 0)
-                              })
-                            );
-    
-                            toast.success(`${title} added to cart!`);
-                          }}
-                        >
-                          {btn.label}
-                        </Button>
-                      );
-                    }
+          {/* SIZE */}
+          {/* <div className="product-size">100ml</div> */}
 
-                    return (
-                      <Button
-                        key={index}
-                        variant="primary"
-                        className="mx-1"
-                      >
-                        {btn}
-                      </Button>
-                    );
-                  })
-                ) : (
-                  <Button variant="primary">{button}</Button>
-                )
-              )}
+          {/* RATING */}
+          {/* <div className="rating">
+            ⭐ <strong>5.0</strong>
+            <span className="reviews">✔ 164 Reviews</span>
+          </div> */}
 
-            </div>
+          {/* PRICE */}
+          <div className="price-box">
+            <span className="final-price">₹{finalPrice}</span>
+
+            {originalPrice > 0 && (
+              <>
+                <span className="old-price">₹{originalPrice}</span>
+
+                {discountPercent > 0 && (
+                  <span className="discount">
+                    {discountPercent}% off
+                  </span>
+                )}
+              </>
             )}
+          </div>
+
+          {/* ADD TO CART */}
+          <Button
+            variant="success"
+            className="add-to-cart-btn text-white w-100 mt-3"
+            onClick={() => {
+              dispatch(
+                addToCart({
+                  id: productId,
+                  name: title,
+                  price: finalPrice,
+                  img: img,
+                  discount: discountPercent,
+                })
+              );
+              toast.success(`${title} added to cart!`);
+            }}
+          >
+            ADD TO CART
+          </Button>
 
         </Card.Body>
       </Card>

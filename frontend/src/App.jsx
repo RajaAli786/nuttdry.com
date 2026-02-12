@@ -33,7 +33,7 @@ function App() {
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
                 <Route path="/featured-products" element={<ProductList defaultSlug="featured-products" />} />
-                <Route path="/top-products" element={<ProductList defaultSlug="top-products" />} />
+                <Route path="/best-sellers" element={<ProductList defaultSlug="best-sellers" />} />
                 <Route path="/new-products" element={<ProductList  defaultSlug="new-products"/>} />
                 <Route path="/:slug" element={<Page />} />
             </Routes>

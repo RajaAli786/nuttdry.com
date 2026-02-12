@@ -19,20 +19,22 @@ const TopProduct = () => {
   
 
   if (loading) return null;
-
+  
   const slides = (topItems || []).map((product) => ({
+    
     id: product.id,
     content: (
       <Cards
         productId={product.id}
         slug={product.slug}
         title={product.name}
-        img={`${IMAGE_URL}/${product.image}`}
-        price={product.price}
-        offer={product.discount}
-        button={[ { label: ( <> <i className="fa fa-cart-arrow-down me-2" /> Add to Cart </> ), color: "success", }, ]}
+        img={`${IMAGE_URL}/${product.primary_image?.image}`}
+        price={product.primary_size?.price}
+        old_price={product.primary_size?.old_price}
+        tags={product.tags}
       />
     ),
+    
   }));
 
 

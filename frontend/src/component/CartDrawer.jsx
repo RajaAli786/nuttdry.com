@@ -54,7 +54,7 @@ const CartDrawer = ({ open, setOpen }) => {
             <p>No items in cart.</p>
           ) : (
             <>
-              <table className="cart-table table table-bordered table-striped table-hover">
+              <table className="cart-table table ttable-bordered table-striped table-hover">
                 <tbody>
                   {cartItems.map((item) => (
                     <tr key={item.id}>
@@ -81,7 +81,7 @@ const CartDrawer = ({ open, setOpen }) => {
                         />
                       </td>
 
-                      <td style={{ verticalAlign: "middle" }}>
+                      <td style={{ verticalAlign: "middle", width: "80px"  }}>
                         ₹ {item.price * item.qty}
                       </td>
 

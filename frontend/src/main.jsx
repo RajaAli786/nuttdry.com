@@ -12,6 +12,8 @@ import "./assets/css/marquee.scss";
 import './assets/css/banner.scss'; 
 import './assets/css/testimonials.scss'; 
 import './assets/css/footer.scss';
+import { HelmetProvider } from "react-helmet-async";
+
 
 
 
@@ -20,7 +22,9 @@ import './assets/css/footer.scss';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
+      <HelmetProvider>
         <App />
+      </HelmetProvider>
     </Provider>
   </StrictMode>,
 )

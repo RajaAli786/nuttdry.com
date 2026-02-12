@@ -26,6 +26,8 @@ const Testimonials = () => {
       });
   }, []);
 // console.log("setTestimonials:- ", testimonials);
+// if (!testimonials || testimonials.length === 0) return null;
+
   return (
     <main className="slide-row testimonial-section mt-5">
       <Container className='mt-5 mb-3 product-container'>
@@ -36,9 +38,9 @@ const Testimonials = () => {
       <Swiper
         modules={[Pagination, Autoplay]}
         slidesPerView={3}
-        // autoplay={{ delay: 4000 }}
-        loop={true}
-        speed={600}
+        autoplay={{ delay: 5000 }}
+        loop={testimonials.length >= 3}
+        // speed={600}
         spaceBetween={30}
         pagination={{
           clickable: true,

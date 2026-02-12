@@ -42,8 +42,8 @@ export const fetchTopProducts = createAsyncThunk(
   "products/fetchTopProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetchProductsAPI({ is_top: 1, limit: 10 });
-      console.log("Top Products API:", res);
+      const res = await fetchProductsAPI({ is_top: 1});
+      // console.log("Top Products API:", res);
       return res.data || []; 
     } catch (err) {
       return rejectWithValue("Failed to fetch top products");
@@ -57,8 +57,8 @@ export const fetchFeaturedProducts = createAsyncThunk(
   "products/fetchFeaturedProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetchProductsAPI({ is_featured: 1, limit: 10 });
-      console.log("Featured Products API:", res);
+      const res = await fetchProductsAPI({ is_featured: 1});
+      // console.log("Featured Products API:", res);
       return res.data || []; 
     } catch (err) {
       return rejectWithValue("Failed to fetch featured products");
@@ -70,11 +70,44 @@ export const fetchNewProducts = createAsyncThunk(
   "products/fetchNewProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetchProductsAPI({ is_new: 1, limit: 10 });
-      console.log("New Products API:", res);
+      const res = await fetchProductsAPI({ is_new: 1, limit: 8 });
+      // console.log("New Products API:", res);
       return res.data || []; 
     } catch (err) {
       return rejectWithValue("Failed to fetch new products");
+    }
+  }
+);
+
+export const fetchProductById = createAsyncThunk(
+  "products/fetchProductById",
+  async (slug, { rejectWithValue }) => {
+    try {
+      const res = await fetchProductByIdAPI(slug);
+      // console.log("Product Detail API:", res);
+      return res.data ?? res;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || "Failed to fetch product"
+      );
+    }
+  }
+);
+
+export const fetchRelatedProducts = createAsyncThunk(
+  "products/fetchRelatedProducts",
+  async (category_id, { rejectWithValue }) => {
+    try {
+      const res = await fetchProductsAPI({
+        category_id: category_id,
+        limit: 8,   // max 8 related
+      });
+
+      return res.data || [];
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch related products"
+      );
     }
   }
 );
@@ -94,6 +127,7 @@ const productSlice = createSlice({
     newItems: [],
   
     product: null,
+    productDetails: null,
     loading: false,
     error: null,
   
@@ -107,6 +141,8 @@ const productSlice = createSlice({
     is_featured: "",
     is_top: "",
     is_new: "",
+
+    relatedItems: [],
   
     page: 1,
     limit: 12,
@@ -141,6 +177,9 @@ const productSlice = createSlice({
     },
     setLimit(state, action) {
       state.limit = action.payload;
+    },
+    clearProductDetails: (state) => {
+      state.productDetails = null;
     },
   },  
   extraReducers: (builder) => {
@@ -192,7 +231,32 @@ const productSlice = createSlice({
       ========================= */
       .addCase(fetchNewProducts.fulfilled, (state, action) => {
         state.newItems = action.payload; 
-      });
+      })
+
+
+      .addCase(fetchProductById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.productDetails = action.payload;
+      })
+      .addCase(fetchProductById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(fetchRelatedProducts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchRelatedProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.relatedItems = action.payload;
+      })
+      .addCase(fetchRelatedProducts.rejected, (state) => {
+        state.loading = false;
+      })
   },
   
 });
@@ -207,6 +271,7 @@ export const {
   setTop,
   setPage,
   setLimit,
+  clearProductDetails,
 } = productSlice.actions;
 
 export default productSlice.reducer;

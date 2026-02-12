@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import Layout from "./common/Layout";
 import FilterSidebar from "./FilterSidebar";
 import ProductGrid from "./ProductGrid";
-
+import { Helmet } from "react-helmet-async";
 
 
 import {
@@ -56,7 +56,7 @@ const ProductList = ({defaultSlug}) => {
     dispatch(setCategory(""));
     dispatch(setPage(1));
 
-    if (slug === "top-products") {
+    if (slug === "best-sellers") {
       dispatch(setTop(1));
       return;
     }
@@ -93,8 +93,19 @@ const ProductList = ({defaultSlug}) => {
   //   });
   // }, [is_top, is_featured, is_new, category]);
 
+  
   return (
     <Layout>
+      <Helmet>
+        <title>
+          {slug ? slug.replace("-", " ") + " | NuttDry" : "Products | NuttDry"}
+        </title>
+        <meta
+          name="description"
+          content={`Buy ${slug ? slug.replace("-", " ") : "healthy dry fruits"} online at best price`}
+        />
+      </Helmet>
+
       <Container className="my-5">
         <Row className="mb-4">
           <h3 className="text-capitalize">

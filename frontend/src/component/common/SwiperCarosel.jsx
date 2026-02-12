@@ -10,19 +10,19 @@ import { Pagination, Autoplay, Navigation} from 'swiper/modules';
 import { Container } from 'react-bootstrap';
 
 const SwiperCarosel = ({ items }) => {
-console.log(items);
+// console.log(items);
   return (
     <>
-      <Container>
+      <Container className='p-0'>
       <Swiper
       slidesPerView={4}
-      spaceBetween={30}
+      spaceBetween={0}
       pagination={{ clickable: true }}
       autoplay={{ delay: 2500, disableOnInteraction: false }}
       modules={[Autoplay, Navigation]}
       navigation={false}
       className="mySwiperProduct"
-      loop={true} 
+      loop={items.length >= 3}
       grabCursor={true} 
       breakpoints={{
         0: {

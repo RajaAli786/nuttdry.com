@@ -20,14 +20,14 @@ const SuperFlowSwiper = () => {
   useEffect(() => {
     dispatch(fetchSliders());
   }, [dispatch]);
-
-  // console.log("Sliders from store:", sliders);
+  
+  if (!sliders || sliders.length === 0) return null;
   return (
     <Swiper
       modules={[Autoplay, Pagination, Navigation, Zoom]}
-      navigation={true}
+      navigation={false}
       pagination={{ clickable: true }}
-      autoplay={{ delay: 2500, disableOnInteraction: false }}
+      autoplay={{ delay: 5000, disableOnInteraction: false }}
       loop={true}
       zoom={true}
       className="mySwiper"
@@ -58,10 +58,10 @@ const SuperFlowSwiper = () => {
         },
         1024: {
           pagination: {
-            enabled: true // desktop
+            enabled: false // desktop
           },
           navigation:{
-            enabled: true
+            enabled: false
           }
         },
       }}

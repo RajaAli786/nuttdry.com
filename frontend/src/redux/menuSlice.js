@@ -102,8 +102,10 @@ const menuSlice = createSlice({
 export const selectMenusRaw = (state) => state.menu.data;
 
 
-export const selectMenuTree = (state) =>
-  buildMenuTree(state.menu.data);
+export const selectMenuTree = createSelector(
+  [selectMenusRaw],
+  (menus) => buildMenuTree(menus)
+);
 
 /* ===============================
    Exports

@@ -25,19 +25,16 @@ const ProductGrid = () => {
     <>
       <Row>
         {items.map((product) => (
+          // console.log("Rendering product:", product),
           <Col key={product.id} md={4} className="mb-4">
             <Cards
               productId={product.id}
               slug={product.slug}
               title={product.name}
-              img={`${IMAGE_URL}/${product.image}`}
-              price={product.price}
-              old_price={
-                product.discount > 0
-                  ? Math.round(product.price / (1 - product.discount / 100))
-                  : null
-              }
-              offer={product.discount}
+              img={`${IMAGE_URL}/${product.primary_image?.image}`}
+              price={product.primary_size?.price}
+              old_price={product.primary_size?.old_price}
+              tags={product.tags}
               button={[
                 {
                   label: (

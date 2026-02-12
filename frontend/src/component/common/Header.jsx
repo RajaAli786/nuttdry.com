@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectCartCount } from "../../redux/cartSlice";
 import { fetchHeaderSettings } from '../../redux/headerSlice';
 import { fetchMenus, selectMenuTree } from '../../redux/menuSlice';
+import AnimatedSearch from './AnimatedSearch';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 const IMAGE_URL = import.meta.env.VITE_IMAGE_PATH;
@@ -29,18 +30,11 @@ const CustomNavbar = ({ setOpen }) => {
 
   return (
 
-    <header className="navbar-wrapper border-bottom bg-white">
+    <header className="navbar-wrapper border-bottom bg-white shadow-sm">
       <Container>
 
-        <div className="d-flex justify-content-between align-items-center py-2">
-
-          <div className="d-flex align-items-center gap-2">
-            <i className="fa fa-search"></i>
-            <span>Search</span>
-          </div>
-
-
-          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center justify-content-center m-0">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-2">
+          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center justify-content-center mt-3">
             {/* <span className="logo-text me-1">N</span>
             <strong className="brand-text">UTTDRY</strong> */}
             {headerLoading ? (
@@ -49,10 +43,15 @@ const CustomNavbar = ({ setOpen }) => {
               <img
                 src={`${IMAGE_URL}/${headerData.logo}`}
                 alt="Logo"
-                style={{ width: '90px' }}
+                style={{ width: '130px' }}
               />
             ) : null}
           </Navbar.Brand>
+
+          <div className="d-flex align-items-center gap-2">
+            {<AnimatedSearch />}
+
+          </div>
 
 
           <div className="d-flex align-items-center gap-4 for-cart-section">
@@ -60,14 +59,14 @@ const CustomNavbar = ({ setOpen }) => {
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  "text-decoration-none icon-wrapper " + (isActive ? "active" : "")
+                  "text-decoration-none  icon-wrapper " + (isActive ? "active" : "")
                 }
               >
                 <i className="bi bi-person-fill-down"></i>
                 <div className="icon-label">Account</div>
               </NavLink>
             </div>
-            <div className="text-center">
+            <div className="text-center ">
               <div className='i-wrap' onClick={() => setOpen(true)}>
                 <span style={{ position: "absolute", zIndex: 999, fontSize: "12px", color: "#fff", margin: "6px 6px" }}>{cartCount}</span>
                 <a href="#"><i style={{ position: "relative" }} className="bi bi-cart-fill cart-icon"></i></a>

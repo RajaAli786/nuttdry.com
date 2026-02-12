@@ -26,7 +26,7 @@ function Home() {
       </MarqueeContainer>
 
       {/* TOP PRODUCTS */}
-      <ProductHeader title="Top Products" link="/top-products" />
+      <ProductHeader title="Best Sellers" link="/best-Sellers" />
       <TopProduct />
 
       {/* FEATURED PRODUCTS */}

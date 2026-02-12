@@ -45,6 +45,7 @@ const CartPage = () => {
     <Layout>
       <div className="container py-5">
         <h2 className="mb-4 text-center fw-bold">Your Cart</h2>
+        <div className="border"></div>
 
         {cartItems.length === 0 ? (
           <div className="text-center py-5">
@@ -64,12 +65,12 @@ const CartPage = () => {
                 <div className="card-body">
                   <h5 className="fw-bold mb-3">Cart Items</h5>
 
-                  <table className="table align-middle table-hover">
+                  <table className="table align-middle table-bordered table-hover">
                     <thead className="table-light">
                       <tr>
                         <th>Product</th>
                         <th>Qty</th>
-                        <th>Price</th>
+                        <th style={{width: "80px" }}>Price</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -181,7 +182,7 @@ const CartPage = () => {
                   </div>
 
                   <button
-                    className="btn btn-outline-primary w-100 mb-2"
+                    className="btn btn-primary w-100 mb-2"
                     onClick={applyCouponHandler}
                   >
                     Apply Coupon
