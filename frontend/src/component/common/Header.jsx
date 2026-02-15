@@ -26,6 +26,43 @@ const CustomNavbar = ({ setOpen }) => {
     dispatch(fetchHeaderSettings());
     dispatch(fetchMenus());
   }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const header = document.querySelector(".navbar-wrapper");
+      if (!header) return;
+  
+      if (window.scrollY > 20) {
+        header.classList.add("sticky-shadow");
+      } else {
+        header.classList.remove("sticky-shadow");
+      }
+    };
+  
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const menu = document.querySelector(".menu-sticky");
+    if (!menu) return;
+  
+    const menuOffset = menu.offsetTop;
+  
+    const onScroll = () => {
+      if (window.scrollY > menuOffset) {
+        menu.classList.add("is-fixed");
+        document.body.style.paddingTop = `${menu.offsetHeight}px`;
+      } else {
+        menu.classList.remove("is-fixed");
+        document.body.style.paddingTop = "0px";
+      }
+    };
+  
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  
   // console.log("Menu Setting:", menus);
 
   const getMenuPath = (menu) => {
@@ -63,11 +100,10 @@ const CustomNavbar = ({ setOpen }) => {
 
   return (
 
-    <header className="navbar-wrapper border-bottom bg-white shadow-sm">
+    <header className="navbar-wrapper border-bottom bg-white">
       <Container>
-
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-2">
-          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center justify-content-center mt-3">
+        <div className="header-top d-flex align-items-center py-3">
+          <Navbar.Brand as={Link} to="/" className="navbar-logo">
             {/* <span className="logo-text me-1">N</span>
             <strong className="brand-text">UTTDRY</strong> */}
             {headerLoading ? (
@@ -81,13 +117,13 @@ const CustomNavbar = ({ setOpen }) => {
             ) : null}
           </Navbar.Brand>
 
-          <div className="d-flex align-items-center gap-2">
+          <div className="header-search flex-grow-1">
             {<AnimatedSearch />}
 
           </div>
 
 
-          <div className="d-flex align-items-center gap-4 for-cart-section">
+          <div className="for-cart-section d-flex align-items-center gap-4">
             <div className="text-center">
               <NavLink
                 to="/login"
@@ -108,10 +144,11 @@ const CustomNavbar = ({ setOpen }) => {
             </div>
           </div>
         </div>
+      </Container>
 
-        <hr />
+        <hr className="m-0" />
 
-        <Navbar expand="lg" className="pt-0 pb-2">
+        <Navbar expand="lg" className="menu-sticky" variant="light">
           <Container className="p-0">
 
             {/* ✅ Only ONE toggle */}
@@ -171,8 +208,6 @@ const CustomNavbar = ({ setOpen }) => {
 
           </Container>
         </Navbar>
-
-      </Container>
     </header>
   );
 };

@@ -99,7 +99,6 @@ const Page = () => {
 
   }, [dispatch, page, limit, search, menu_id, category, priceRange, sort, is_top, is_featured, is_new, slug]);
 
-  console.log("Matched Menu:", matchedMenu);
   if (matchedMenu?.page_type === 2) {
 
     return (

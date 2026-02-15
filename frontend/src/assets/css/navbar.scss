@@ -42,7 +42,7 @@ $text-color: #000;
 
       &:hover {
         font-weight: 500;
-        color: $primary-color !important;
+        color: #fff !important;
         // text-decoration: underline;
       }
 
@@ -51,7 +51,7 @@ $text-color: #000;
       }
       &.active {
         font-weight: 500;
-        color: $primary-color !important;
+        color: #fff !important;
         // text-decoration: underline;
       }
     }
