@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 
 import { useSelector, useDispatch } from "react-redux";
 import { selectCartCount } from "../../redux/cartSlice";
 import { fetchHeaderSettings } from '../../redux/headerSlice';
 import { fetchMenus, selectMenuTree } from '../../redux/menuSlice';
 import AnimatedSearch from './AnimatedSearch';
-
+ 
 const BASE_URL = import.meta.env.VITE_API_URL;
 const IMAGE_URL = import.meta.env.VITE_IMAGE_PATH;
 
 const CustomNavbar = ({ setOpen }) => {
+  const location = useLocation();
+
   const cartCount = useSelector(selectCartCount);
   const dispatch = useDispatch();
 
@@ -26,7 +28,38 @@ const CustomNavbar = ({ setOpen }) => {
   }, []);
   // console.log("Menu Setting:", menus);
 
+  const getMenuPath = (menu) => {
+    // if (menu.page_type === 2) {
+    //   return `/static/${menu.slug}`;
+    // }
+    return `/${menu.slug}`;
+  };
 
+  const isDropdownActive = (menu) => {
+    return (
+      location.pathname === getMenuPath(menu) ||
+      menu.submenus?.some((submenu) =>
+        location.pathname.startsWith(getMenuPath(submenu))
+      )
+    );
+  };
+
+  const CustomToggle = React.forwardRef(
+    ({ children, onClick, active }, ref) => (
+      <a
+        href="#"
+        ref={ref}
+        onClick={(e) => {
+          e.preventDefault();
+          onClick(e);
+        }}
+        className={`nav-link dropdown-toggle ${active ? "active" : ""
+          }`}
+      >
+        {children}
+      </a>
+    )
+  );
 
   return (
 
@@ -92,32 +125,42 @@ const CustomNavbar = ({ setOpen }) => {
                     <li className="nav-item">Loading...</li>
                   ) : (
                     menuTree.map((menu) => (
-                      <li key={menu.id} className="nav-item">
+                      <li key={menu.id} className="nav-item" >
+
+                        {/* ===== Dropdown Menu ===== */}
                         {menu.submenus && menu.submenus.length > 0 ? (
+
                           <NavDropdown
                             title={menu.title}
                             id={`nav-dropdown-${menu.id}`}
+                            active={isDropdownActive(menu)}
                           >
                             {menu.submenus.map((submenu) => (
                               <NavDropdown.Item
                                 key={submenu.id}
                                 as={NavLink}
-                                to={`/${submenu.slug}`}
+                                to={getMenuPath(submenu)}
+                                className="dropdown-item"
                               >
                                 {submenu.title}
                               </NavDropdown.Item>
                             ))}
                           </NavDropdown>
+
                         ) : (
+
+                          /* ===== Normal Menu ===== */
                           <NavLink
-                            to={`/${menu.slug}`}
+                            to={getMenuPath(menu)}
                             className={({ isActive }) =>
-                              "nav-link " + (isActive ? "active" : "")
+                              "nav-link " + (isActive ? "active fw-bold" : "")
                             }
                           >
                             {menu.title}
                           </NavLink>
+
                         )}
+
                       </li>
                     ))
                   )}

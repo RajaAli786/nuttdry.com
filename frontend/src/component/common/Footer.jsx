@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, Link } from 'react-router-dom';
 import api from "../../api/http";
 
+
 const Footer = () => {
   const [footer, setFooter] = useState(null);
   const [footerMenu, setFooterMenu] = useState([]);
@@ -34,11 +35,9 @@ const Footer = () => {
 
   if (!footer) return null;
 
-  const getMenuLinks = (columnTitle) => {
-    return footerMenu.filter((menu) => menu.column === columnTitle && menu.status === 1);
-  };
 
-  // console.log("Footer :", footer);
+
+  // console.log("footerMenu :", footerMenu);
 
   return (
     <footer className="bg-light pt-5 border-top">
@@ -88,11 +87,18 @@ const Footer = () => {
           <div className="col-md-3" >
             <h5>ABOUT NUTTDRY</h5>
             <ul className="list-unstyled mt-3">
-              <li>
-                <NavLink to="/our-story" className="text-dark text-decoration-none">
-                  Our Story
-                </NavLink>
-              </li>
+            {footerMenu.map((footerMenu) => (
+              footerMenu.type === 2 && (
+                <li key={footerMenu.id}>
+                  <NavLink
+                    to={`/${footerMenu.slug}`}
+                    className="text-dark text-decoration-none"
+                  >
+                    {footerMenu.title}
+                  </NavLink>
+                </li>
+              )
+            ))}
             </ul>
           </div>
 

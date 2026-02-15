@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import Layout from "./common/Layout";
 import FilterSidebar from "./FilterSidebar";
 import ProductGrid from "./ProductGrid";
-import { Helmet } from "react-helmet-async";
+import SEO from "./common/SEO";
 
 
 import {
@@ -96,19 +96,11 @@ const ProductList = ({defaultSlug}) => {
   
   return (
     <Layout>
-      <Helmet>
-        <title>
-          {slug ? slug.replace("-", " ") + " | NuttDry" : "Products | NuttDry"}
-        </title>
-        <meta
-          name="description"
-          content={`Buy ${slug ? slug.replace("-", " ") : "healthy dry fruits"} online at best price`}
-        />
-      </Helmet>
+        
 
       <Container className="my-5">
         <Row className="mb-4">
-          <h3 className="text-capitalize">
+          <h3 className="text-capitalize ">
             {slug ? slug.replace("-", " ") : "Products"}
           </h3>
         </Row>

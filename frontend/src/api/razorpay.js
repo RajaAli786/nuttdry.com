@@ -36,10 +36,10 @@ export const startRazorpayPayment = async ({ amount, user, onSuccess }) => {
   }
 
   const options = {
-    key: import.meta.env.VITE_RAZORPAY_KEY, // Vite environment variable
-    amount: amount * 100, // paise me convert
+    key: import.meta.env.VITE_RAZORPAY_KEY,
+    amount: Math.round(amount * 100), 
     currency: "INR",
-    name: "My Store",
+    name: "Nuttdry.com",
     description: "Order Payment",
     handler: function (response) {
       if (onSuccess) onSuccess(response);

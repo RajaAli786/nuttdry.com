@@ -14,6 +14,9 @@ const Cards = ({
   price,
   old_price,
   tags,          // eg: "SELLING FAST"
+  taxPercent,
+  taxTitle,
+  size,
   img,
 }) => {
   const dispatch = useDispatch();
@@ -22,11 +25,9 @@ const Cards = ({
   const finalPrice = Number(price) || 0;
 
   let discountPercent = 0;
-  if (originalPrice > finalPrice && originalPrice > 0) {
-    discountPercent = Math.round(
-      ((originalPrice - finalPrice) / originalPrice) * 100
-    );
-  }
+  discountPercent = originalPrice > finalPrice 
+    ? Math.floor(((originalPrice - finalPrice) / originalPrice) * 100)
+    : 0;
 
   return (
     <Container className="d-flex justify-content-center p-0">
@@ -96,14 +97,18 @@ const Cards = ({
                   id: productId,
                   name: title,
                   price: finalPrice,
-                  img: img,
-                  discount: discountPercent,
+                  taxPercent: taxPercent, // Cards me tax info nahi hai, default 0
+                  taxTitle: taxTitle,  // Cards me tax title nahi hai
+                  size: size,      // Size info nahi hai, default empty
+                  discount: discountPercent || 0,
+                  qty: 1,        // default 1
+                  img: img || "",
                 })
               );
               toast.success(`${title} added to cart!`);
             }}
           >
-            ADD TO CART
+            ADD TO CART 
           </Button>
 
         </Card.Body>

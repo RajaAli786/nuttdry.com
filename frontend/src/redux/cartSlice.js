@@ -11,6 +11,7 @@ const cartSlice = createSlice({
     items: savedCart,
     shipping: 0,        // flat shipping or dynamic
     discount: 0,        // coupon / price discount
+    appliedCoupon: null, 
   },
 
   reducers: {
@@ -19,9 +20,9 @@ const cartSlice = createSlice({
       const exist = state.items.find((x) => x.id === item.id);
 
       if (exist) {
-        exist.qty += 1;
+        exist.qty += item.qty;
       } else {
-        state.items.push({ ...item, qty: 1 });
+        state.items.push({ ...item });
       }
 
       localStorage.setItem("cartItems", JSON.stringify(state.items));
@@ -49,7 +50,8 @@ const cartSlice = createSlice({
     },
 
     applyDiscount: (state, action) => {
-      state.discount = action.payload; 
+      state.discount = action.payload.discount || 0;
+      state.appliedCoupon = action.payload.coupon || null;
     },
 
     setShipping: (state, action) => {
@@ -71,8 +73,11 @@ export const selectCartCount = (state) =>
 
 // Subtotal
 export const selectCartSubtotal = (state) =>
-  state.cart.items.reduce((sum, item) => sum + item.price * item.qty, 0);
-
+  state.cart.items.reduce((sum, item) => {
+    const price = Number(item.price) || 0;
+    const qty = Number(item.qty) || 0;
+    return sum + price * qty;
+  }, 0);
 // Final total with shipping & discount
 export const selectCartGrandTotal = (state) => {
   const subtotal = state.cart.items.reduce(
@@ -89,12 +94,16 @@ export const selectShipping = (state) => state.cart.shipping;
 // Discount
 export const selectDiscount = (state) => state.cart.discount;
 
+export const selectAppliedCoupon = (state) =>
+  state.cart.appliedCoupon;
+
 export const {
   addToCart,
   removeFromCart,
   updateQty,
   clearCart,
   applyDiscount,
+  
   setShipping,
 } = cartSlice.actions;
 

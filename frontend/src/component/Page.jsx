@@ -8,11 +8,13 @@ import FilterSidebar from "./FilterSidebar";
 import ProductGrid from "./ProductGrid";
 import { fetchProducts, setMenu, setCategory } from "../redux/productSlice";
 import { fetchMenus, selectMenuTree, selectMenusRaw } from "../redux/menuSlice";
+import StaticPage from "./StaticPage";
+import SEO from "./common/SEO";
 
 const Page = () => {
   const dispatch = useDispatch();
   const { slug } = useParams();
-  
+
   const {
     page,
     limit,
@@ -30,16 +32,19 @@ const Page = () => {
   const menus = useSelector(selectMenusRaw);
 
   const { items: categories = [] } = useSelector((state) => state.category);
-
+  
   useEffect(() => {
     dispatch(fetchMenus());
   }, [dispatch]);
+
+  const matchedMenu = menus.find((m) => m.slug === slug);
 
   useEffect(() => {
     if (!slug) return;
 
 
     const menu = menus.find((m) => m.slug === slug);
+
     if (menu && menu.id !== menu_id) {
 
       dispatch(setMenu(menu.id));
@@ -54,7 +59,7 @@ const Page = () => {
 
     if (slug === "top-products") {
       console.log("top-products slug detected");
-      dispatch(setMenu("")); 
+      dispatch(setMenu(""));
       dispatch(setCategory(""));
       return;
     }
@@ -77,7 +82,7 @@ const Page = () => {
       return;
 
     dispatch(
-     
+
       fetchProducts({
         page,
         limit,
@@ -91,12 +96,58 @@ const Page = () => {
         is_new,
       })
     );
-    
+
   }, [dispatch, page, limit, search, menu_id, category, priceRange, sort, is_top, is_featured, is_new, slug]);
+
+  console.log("Matched Menu:", matchedMenu);
+  if (matchedMenu?.page_type === 2) {
+
+    return (
+      <Layout>
+        <SEO
+            key={slug}
+            title={matchedMenu?.page_title ||
+              matchedMenu?.meta_title ||
+              "Products | Dry Fruit Store"}
+
+            description={
+              matchedMenu?.meta_description ||
+              "Shop premium quality dry fruits online."
+            }
+
+            keywords={
+              matchedMenu?.meta_keywords ||
+              "dry fruits, almonds, cashews, walnuts"
+            }
+        />
+        <StaticPage id={matchedMenu.id} />
+      </Layout>
+    );
+  }
+  else
 
   return (
     <Layout>
+      <SEO
+        key={slug}  
+        title={matchedMenu?.page_title ||
+            matchedMenu?.meta_title ||
+            "Products | Dry Fruit Store"}
+        description={
+            matchedMenu?.meta_description ||
+            "Shop premium quality dry fruits online."
+          }
+        keywords={
+            matchedMenu?.meta_keywords ||
+            "dry fruits, almonds, cashews, walnuts"
+          }
+        />
       <Container className="my-4">
+        <Row className="mb-4">
+          <h3 className="text-capitalize">
+            {slug ? slug.replace("-", " ") : "Products"}
+          </h3>
+        </Row>
         <Row>
           <Col lg={3} className="mb-4">
             <FilterSidebar />

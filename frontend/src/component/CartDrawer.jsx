@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import {
   selectCartItems,
   selectCartSubtotal,
-  selectDiscount,
   removeFromCart,
   updateQty,
-  applyDiscount,
+  selectDiscount,
+  selectAppliedCoupon,
 } from "../redux/cartSlice";
 
 import "../assets/css/CartDrawer.scss";
@@ -68,7 +68,7 @@ const CartDrawer = ({ open, setOpen }) => {
                         <input
                           type="number"
                           min={1}
-                          value={item.qty}
+                          value={item.qty || 0}
                           className="qty-input"
                           onChange={(e) =>
                             dispatch(

@@ -18,6 +18,7 @@ const NewProduct = () => {
 
   if (loading) return null;
 
+ 
   const slides = (
   <Container className="product-container">
   <Row className="g-4">
@@ -37,7 +38,10 @@ const NewProduct = () => {
           img={`${IMAGE_URL}/${product.primary_image?.image}`}
           price={product.primary_size?.price}
           old_price={product.primary_size?.old_price}
+          size={product.primary_size?.size}
           tags={product.tags}
+          taxPercent={product.tax}
+          taxTitle={product.tax_title}
         />
       </Col>
     ))}

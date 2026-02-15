@@ -291,4 +291,47 @@ $border-color: #8b830d;
     padding: 14px;
   }
   
+
+  .static-page-wrapper {
+    // background-color: #f8f9fa;
+  }
+  
+  .static-page-wrapper .page-title {
+    font-size: 42px;
+    font-weight: 600;
+    color: #2c2c2c;
+    letter-spacing: 1px;
+  }
+  
+  .static-page-wrapper .title-underline {
+    width: 80px;
+    height: 3px;
+    background-color: #c4a84a; /* golden touch */
+    margin-top: 10px;
+  }
+  
+  .static-page-wrapper .page-content {
+    font-size: 17px;
+    line-height: 1.9;
+    color: #444;
+  }
+  
+  .page-content h2,
+  .page-content h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .page-content p {
+    margin-bottom: 15px;
+  }
+  
+  .page-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  
   

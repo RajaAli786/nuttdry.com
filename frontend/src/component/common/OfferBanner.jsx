@@ -12,7 +12,7 @@ const OfferBanner = () => {
     dispatch(fetchHeaderSettings());
   }, [dispatch]);
 
-  if (loading || !headerData?.offer_title) return null;
+  if (loading || !headerData?.offer_banner) return null;
 
   return (
     <div className="offer-banner position-relative text-center text-white">
@@ -20,7 +20,7 @@ const OfferBanner = () => {
         src={`${IMAGE_URL}/${headerData.offer_banner}`} alt="Special Offer" className="offer-banner-img w-100"
       />
 
-      <div className="offer-banner-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+      {/* <div className="offer-banner-overlay position-absolute top-0 start-0 w-100 h-100"></div> */}
 
       <div className="offer-banner-text position-absolute top-50 start-50 translate-middle">
       <p

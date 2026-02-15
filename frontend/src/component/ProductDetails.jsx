@@ -15,6 +15,7 @@ import { Thumbs } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/thumbs";
 import "../assets/css/ProductDetails.scss";
+import SEO from "./common/SEO";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -107,17 +108,36 @@ function ProductDetails() {
   const product = productDetails;
 
   /* ================= PRICE CALCULATION ================= */
+
+  const rating = Number(product?.rating || 0);
+
   const unitPrice = Number(selectedSize?.price || 0);
   const oldUnitPrice = Number(selectedSize?.old_price || 0);
 
   const totalPrice = unitPrice * quantity;
   const totalOldPrice = oldUnitPrice * quantity;
 
+  /* ===== TAX ===== */
+  const taxPercent = Number(product?.tax || 0);
+  // agar size level pe hai to:
+  // const taxPercent = Number(selectedSize?.tax || 0);
+
+  const taxAmount = (unitPrice * taxPercent) / 100;
+
+  /* ===== FINAL PAYABLE AMOUNT ===== */
+  const finalAmount = totalPrice - taxAmount;
+
+  /* ===== DISCOUNT ===== */
   const discountPercent =
     oldUnitPrice > unitPrice
-      ? Math.round(((oldUnitPrice - unitPrice) / oldUnitPrice) * 100)
+      ? Math.floor(((oldUnitPrice - unitPrice) / oldUnitPrice) * 100)
       : 0;
 
+  const renderStars = (rating) => {
+    return [1, 2, 3, 4, 5].map((star) =>
+      star <= Math.round(rating) ? "★" : "☆"
+    );
+  };
   /* ================= CART ================= */
   const handleAddToCart = () => {
     if (!selectedSize) return toast.error("Please select size");
@@ -126,8 +146,11 @@ function ProductDetails() {
       addToCart({
         id: product.id,
         name: product.name,
-        price: unitPrice,
+        price: unitPrice,   
+        taxPercent: taxPercent,
+        taxTitle: product.tax_title,
         size: selectedSize.size,
+        discount:discountPercent,
         qty: quantity,
         img: product.primary_image?.image
           ? `${IMAGE_URL}/${product.primary_image.image}`
@@ -151,6 +174,16 @@ function ProductDetails() {
 
   return (
     <Layout>
+      <SEO
+        title={product?.meta_title}
+        description={product?.meta_description}
+        keywords={product?.meta_keywords}
+        favicon={
+          product?.favicon
+            ? `${import.meta.env.VITE_IMAGE_PATH}${product.favicon}`
+            : "/favicon.ico"
+        }
+      />
       <div className="container product-details py-4">
 
         <CustomBreadcrumb productName={product.name} />
@@ -204,39 +237,60 @@ function ProductDetails() {
           </div>
 
           {/* ================= DETAILS SECTION ================= */}
-          <div className="col-md-8" style={{padding: '0 60px'}}>
+          <div className="col-md-8" style={{ padding: '0 60px' }}>
 
             <h3 className="fw-bold">{product.name}</h3>
 
             <div className="mb-2 text-warning">
-              ★★★★☆ <span className="text-muted">(4.2)</span>
+              {rating > 0 && renderStars(rating).join(" ")}
+              <span className="text-muted ms-2">
+                ({rating.toFixed(1)})
+              </span>
             </div>
 
             <p className="text-muted">{product.short_description}</p>
 
             {/* PRICE */}
             <div className="my-3">
+
+              {/* FINAL AMOUNT */}
               <h3 className="text-success fw-bold">
-                ₹ {totalPrice}
+                ₹ {finalAmount.toFixed(2)}
               </h3>
 
-              {totalOldPrice > 0 && (
-                <span className="text-muted text-decoration-line-through me-2">
-                  ₹ {totalOldPrice}
-                </span>
+              {/* Subtotal */}
+              <div className="text-muted small">
+                Subtotal: ₹ {totalPrice.toFixed(2)}
+              </div>
+
+              {/* Tax */}
+              {taxPercent > 0 && (
+                <div className="text-muted small fw-bold">
+                  {product.tax_title} ({taxPercent}%): ₹ {taxAmount.toFixed(2)}
+                </div>
               )}
 
+              {/* Old Price */}
+              {oldUnitPrice > unitPrice && (
+                <div className="text-muted text-decoration-line-through">
+                  ₹ {totalOldPrice.toFixed(2)}
+                </div>
+              )}
+
+              {/* Discount Badge */}
               {discountPercent > 0 && (
                 <span className="badge bg-danger ms-2">
                   {discountPercent}% OFF
                 </span>
               )}
 
+              {/* Quantity Info */}
               {quantity > 1 && (
                 <div className="text-muted small mt-1">
                   ₹ {unitPrice} × {quantity}
                 </div>
               )}
+
             </div>
 
             {/* SIZE SELECTOR */}
@@ -459,7 +513,7 @@ function ProductDetails() {
 
       </div>
 
-      
+
     </Layout>
   );
 }

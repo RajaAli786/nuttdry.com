@@ -22,6 +22,7 @@ const TopMarquee = () => {
     if (loading || !headerData?.animated_title_1) return null;
   return (
     <>
+    <div className="marquee-container py-3">
     <div className="marquee-wrapper">
         <div className="container">
         <Swiper
@@ -48,6 +49,7 @@ const TopMarquee = () => {
       </Swiper>
         </div>
       </div>
+      </div>
     </>
   )
 }
@@ -64,6 +66,7 @@ const MiddleMarquee = () => {
     if (loading || !headerData?.animated_title_2) return null;
   return (
     <>
+    <div className="marquee-container py-3">
     <div className="marquee-wrapper">
         <div className="container">
         <Swiper
@@ -90,6 +93,7 @@ const MiddleMarquee = () => {
       </Swiper>
         </div>
       </div>
+      </div>
     </>
   )
 }
@@ -102,13 +106,13 @@ const BlankContainer = () => {
     );
   }
 
-const MarqueeContainer = ({children}) => {
-    return (
-      <div className="marquee-container py-3">
-        {children}
-      </div>
-    );
-  };
+// const MarqueeContainer = ({children}) => {
+//     return (
+//       <div className="marquee-container py-3">
+//         {children}
+//       </div>
+//     );
+//   };
   
 
-export { TopMarquee, MiddleMarquee, MarqueeContainer, BlankContainer }
+export { TopMarquee, MiddleMarquee, BlankContainer }

@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Layout from "./common/Layout";
+import SEO from "./common/SEO";
 
 import {
   selectCartItems,
-  selectCartSubtotal,
-  selectDiscount,
   removeFromCart,
   updateQty,
   applyDiscount,
+  selectDiscount,
+  selectAppliedCoupon,
 } from "../redux/cartSlice";
+
+import { applyCouponAPI } from "../api/coupon";
 
 import "../assets/css/CartDrawer.scss";
 
@@ -19,30 +22,116 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const cartItems = useSelector(selectCartItems);
-  const subtotal = useSelector(selectCartSubtotal);
-  const discount = useSelector(selectDiscount);
+  const couponDiscount = useSelector(selectDiscount);
+  const appliedCoupon = useSelector(selectAppliedCoupon);
 
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
 
-  const finalTotal = Math.max(subtotal - discount, 0);
+  /* ================= CALCULATIONS ================= */
 
-  const applyCouponHandler = () => {
+  const priceData = cartItems.map((item) => {
+    const unitPrice = Number(item.price) || 0;
+    const qty = Number(item.qty) || 0;
+    const taxPercent = Number(item.taxPercent) || 0;
+
+    const subtotal = unitPrice * qty;
+
+    // tax
+    const taxAmount = (subtotal * taxPercent) / 100;
+
+    // final per item
+    const finalAmount = subtotal - taxAmount;
+
+    return {
+      ...item,
+      subtotal,
+      taxAmount,
+      finalAmount,
+    };
+  });
+
+  /* ===== TOTALS ===== */
+
+  const totalSubtotal = priceData.reduce(
+    (sum, item) => sum + item.subtotal,
+    0
+  );
+  const totalFinalAmount = priceData.reduce(
+    (sum, item) => sum + item.finalAmount,
+    0
+  );
+
+  const totalTax = priceData.reduce(
+    (sum, item) => sum + item.taxAmount,
+    0
+  );
+
+  const itemsTotal = priceData.reduce(
+    (sum, item) => sum + item.finalAmount,
+    0
+  );
+
+  const grandTotal = Math.max(itemsTotal - couponDiscount, 0);
+
+  /* ================= COUPON ================= */
+
+  const applyCouponHandler = async () => {
     if (!couponCode) {
       setCouponError("Please enter coupon code");
+      dispatch(applyDiscount({ discount: 0, coupon: null }));
       return;
     }
-
-    if (couponCode === "SAVE50") {
-      dispatch(applyDiscount(50));
-      setCouponError("");
-    } else {
-      setCouponError("Invalid coupon code");
+  
+    try {
+      const res = await applyCouponAPI({
+        code: couponCode,
+        subtotal: totalFinalAmount,
+      });
+  
+      console.log("Coupon API response:", res);
+  
+      if (res.success) {
+        dispatch(
+          applyDiscount({
+            discount: res.data.discount,
+            coupon: {
+              code: res.data.code,
+              title: res.data.title,
+              type: res.data.type,
+              value: res.data.value,
+            },
+          })
+        );
+        setCouponError("");
+      } else {
+        dispatch(applyDiscount({ discount: 0, coupon: null }));
+        setCouponError(res.message);
+      }
+    } catch (err) {
+      dispatch(applyDiscount({ discount: 0, coupon: null }));
+  
+      const msg =
+        err?.response?.data?.message || "Invalid coupon code";
+  
+      setCouponError(msg);
     }
   };
+  
 
   return (
     <Layout>
+      <SEO
+            title={'NuttDry | Nuts Cart - Premium Quality Dry Fruits Online'}
+
+            description={
+              "Review your selected dry fruits in the cart. Update quantities, apply coupons, and proceed to checkout for a healthy shopping experience."
+            }
+
+            keywords={
+              "dry fruits cart, review cart, update quantities, apply coupons, proceed to checkout"
+            }
+        />
       <div className="container py-5">
         <h2 className="mb-4 text-center fw-bold">Your Cart</h2>
         <div className="border"></div>
@@ -59,6 +148,7 @@ const CartPage = () => {
           </div>
         ) : (
           <div className="row g-4">
+
             {/* ================= LEFT CART ================= */}
             <div className="col-lg-8">
               <div className="card shadow-sm border-0">
@@ -70,13 +160,13 @@ const CartPage = () => {
                       <tr>
                         <th>Product</th>
                         <th>Qty</th>
-                        <th style={{width: "80px" }}>Price</th>
+                        <th>Total</th>
                         <th></th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      {cartItems.map((item) => (
+                      {priceData.map((item) => (
                         <tr key={item.id}>
                           <td>
                             <div className="d-flex align-items-center gap-3">
@@ -114,8 +204,23 @@ const CartPage = () => {
                             />
                           </td>
 
-                          <td className="fw-semibold">
-                            ₹ {item.price * item.qty}
+                          <td>
+                            <div>
+                              <div>
+                                ₹ {item.price} × {item.qty}
+                              </div>
+
+                              {item.taxPercent > 0 && (
+                                <div className="text-muted small">
+                                  {item.taxTitle} ({item.taxPercent}%):
+                                  ₹ {item.taxAmount.toFixed(2)}
+                                </div>
+                              )}
+
+                              <div className="fw-bold mt-1">
+                                ₹ {item.finalAmount.toFixed(2)}
+                              </div>
+                            </div>
                           </td>
 
                           <td>
@@ -147,22 +252,44 @@ const CartPage = () => {
 
                   <div className="d-flex justify-content-between mb-2">
                     <span>Subtotal</span>
-                    <strong>₹ {subtotal}</strong>
+                    <strong>₹ {totalFinalAmount.toFixed(2)}</strong>
                   </div>
 
+                  {/* <div className="d-flex justify-content-between mb-2 text-muted">
+                    <span>Total Tax</span>
+                    <strong>₹ {totalTax.toFixed(2)}</strong>
+                  </div> */}
+
                   <div className="d-flex justify-content-between mb-2 text-success">
-                    <span>Discount</span>
-                    <strong>- ₹ {discount}</strong>
+                    <span>Coupon Discount</span>
+                    <strong>- ₹ {couponDiscount}</strong>
                   </div>
+
+                  {appliedCoupon && (
+                    <div className="p-2 mb-2 border rounded bg-light">
+                      <div className="fw-semibold text-success">
+                        🎟 {appliedCoupon.title}
+                      </div>
+
+                      <small className="text-muted d-block">
+                        Code: {appliedCoupon.code}
+                      </small>
+
+                      <small className="text-muted">
+                        {appliedCoupon.type === "flat"
+                          ? `Flat ₹${appliedCoupon.value} OFF`
+                          : `${appliedCoupon.value}% OFF`}
+                      </small>
+                    </div>
+                  )}
 
                   <hr />
 
                   <div className="d-flex justify-content-between fs-5 mb-3">
-                    <strong>Total</strong>
-                    <strong>₹ {finalTotal}</strong>
+                    <strong>Grand Total</strong>
+                    <strong>₹ {grandTotal.toFixed(2)}</strong>
                   </div>
 
-                  {/* COUPON */}
                   <div className="mb-2">
                     <input
                       type="text"
@@ -175,9 +302,7 @@ const CartPage = () => {
                       }}
                     />
                     {couponError && (
-                      <small className="text-danger">
-                        {couponError}
-                      </small>
+                      <small className="text-danger">{couponError}</small>
                     )}
                   </div>
 
@@ -194,13 +319,10 @@ const CartPage = () => {
                   >
                     Proceed to Checkout
                   </button>
-
-                  <small className="text-muted d-block mt-2">
-                    Taxes & shipping calculated at checkout
-                  </small>
                 </div>
               </div>
             </div>
+
           </div>
         )}
       </div>
