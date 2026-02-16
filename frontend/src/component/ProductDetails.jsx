@@ -8,6 +8,7 @@ import { IMAGE_URL } from "../config";
 import Layout from "./common/Layout";
 import CustomBreadcrumb from "./common/Breadcrumb";
 import RelatedProducts from "./RelatedProducts";
+import { splitTax } from "../utils/priceUtils";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Thumbs } from "swiper/modules";
@@ -120,12 +121,12 @@ function ProductDetails() {
   /* ===== TAX ===== */
   const taxPercent = Number(product?.tax || 0);
   // agar size level pe hai to:
-  // const taxPercent = Number(selectedSize?.tax || 0);
+  // const taxPercent = Number(selectedSize?.tax || 0); 
 
-  const taxAmount = (unitPrice * taxPercent) / 100;
+  const { baseAmount, taxAmount, total } =
+  splitTax(totalPrice, taxPercent);
 
-  /* ===== FINAL PAYABLE AMOUNT ===== */
-  const finalAmount = totalPrice - taxAmount;
+  const finalAmount = total;
 
   /* ===== DISCOUNT ===== */
   const discountPercent =
@@ -255,12 +256,12 @@ function ProductDetails() {
 
               {/* FINAL AMOUNT */}
               <h3 className="text-success fw-bold">
-                ₹ {finalAmount.toFixed(2)}
+                ₹ {baseAmount.toFixed(2)}
               </h3>
 
               {/* Subtotal */}
               <div className="text-muted small">
-                Subtotal: ₹ {totalPrice.toFixed(2)}
+                Subtotal: ₹ {finalAmount.toFixed(2)}
               </div>
 
               {/* Tax */}
@@ -269,7 +270,6 @@ function ProductDetails() {
                   {product.tax_title} ({taxPercent}%): ₹ {taxAmount.toFixed(2)}
                 </div>
               )}
-
               {/* Old Price */}
               {oldUnitPrice > unitPrice && (
                 <div className="text-muted text-decoration-line-through">

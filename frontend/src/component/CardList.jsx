@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Layout from "./common/Layout";
 import SEO from "./common/SEO";
+import { splitTax } from "../utils/priceUtils";
 
 import {
   selectCartItems,
@@ -35,30 +36,28 @@ const CartPage = () => {
     const qty = Number(item.qty) || 0;
     const taxPercent = Number(item.taxPercent) || 0;
 
-    const subtotal = unitPrice * qty;
+    const subtotal = unitPrice * qty; // tax included price
 
-    // tax
-    const taxAmount = (subtotal * taxPercent) / 100;
+    const { baseAmount, taxAmount, total } =
+    splitTax(subtotal, taxPercent);
 
-    // final per item
-    const finalAmount = subtotal - taxAmount;
+    const finalAmount = total;
 
     return {
       ...item,
       subtotal,
+      baseAmount,
       taxAmount,
       finalAmount,
     };
   });
 
+
+
   /* ===== TOTALS ===== */
 
-  const totalSubtotal = priceData.reduce(
-    (sum, item) => sum + item.subtotal,
-    0
-  );
-  const totalFinalAmount = priceData.reduce(
-    (sum, item) => sum + item.finalAmount,
+  const totalBaseAmount = priceData.reduce(
+    (sum, item) => sum + item.baseAmount,
     0
   );
 
@@ -67,12 +66,12 @@ const CartPage = () => {
     0
   );
 
-  const itemsTotal = priceData.reduce(
-    (sum, item) => sum + item.finalAmount,
+  const totalSubtotal = priceData.reduce(
+    (sum, item) => sum + item.subtotal,
     0
   );
 
-  const grandTotal = Math.max(itemsTotal - couponDiscount, 0);
+  const grandTotal = Math.max(totalBaseAmount - couponDiscount, 0);
 
   /* ================= COUPON ================= */
 
@@ -82,15 +81,15 @@ const CartPage = () => {
       dispatch(applyDiscount({ discount: 0, coupon: null }));
       return;
     }
-  
+
     try {
       const res = await applyCouponAPI({
         code: couponCode,
-        subtotal: totalFinalAmount,
+        subtotal: totalBaseAmount,
       });
-  
+
       console.log("Coupon API response:", res);
-  
+
       if (res.success) {
         dispatch(
           applyDiscount({
@@ -110,28 +109,28 @@ const CartPage = () => {
       }
     } catch (err) {
       dispatch(applyDiscount({ discount: 0, coupon: null }));
-  
+
       const msg =
         err?.response?.data?.message || "Invalid coupon code";
-  
+
       setCouponError(msg);
     }
   };
-  
+
 
   return (
     <Layout>
       <SEO
-            title={'NuttDry | Nuts Cart - Premium Quality Dry Fruits Online'}
+        title={'NuttDry | Nuts Cart - Premium Quality Dry Fruits Online'}
 
-            description={
-              "Review your selected dry fruits in the cart. Update quantities, apply coupons, and proceed to checkout for a healthy shopping experience."
-            }
+        description={
+          "Review your selected dry fruits in the cart. Update quantities, apply coupons, and proceed to checkout for a healthy shopping experience."
+        }
 
-            keywords={
-              "dry fruits cart, review cart, update quantities, apply coupons, proceed to checkout"
-            }
-        />
+        keywords={
+          "dry fruits cart, review cart, update quantities, apply coupons, proceed to checkout"
+        }
+      />
       <div className="container py-5">
         <h2 className="mb-4 text-center fw-bold">Your Cart</h2>
         <div className="border"></div>
@@ -207,14 +206,20 @@ const CartPage = () => {
                           <td>
                             <div>
                               <div>
-                                ₹ {item.price} × {item.qty}
+                                ₹ {item.baseAmount.toFixed(2)}
                               </div>
 
                               {item.taxPercent > 0 && (
-                                <div className="text-muted small">
-                                  {item.taxTitle} ({item.taxPercent}%):
-                                  ₹ {item.taxAmount.toFixed(2)}
-                                </div>
+                                <>
+                                  <div className="text-muted small">
+                                    Base: ₹ {item.price} × {item.qty}
+                                  </div>
+
+                                  <div className="text-muted small">
+                                    {item.taxTitle} ({item.taxPercent}%):
+                                    ₹ {item.taxAmount.toFixed(2)}
+                                  </div>
+                                </>
                               )}
 
                               <div className="fw-bold mt-1">
@@ -251,19 +256,25 @@ const CartPage = () => {
                   <h5 className="fw-bold mb-3">Order Summary</h5>
 
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Subtotal</span>
-                    <strong>₹ {totalFinalAmount.toFixed(2)}</strong>
+                    <span>Base Amount</span>
+                    <strong>₹ {totalBaseAmount.toFixed(2)}</strong>
                   </div>
 
-                  {/* <div className="d-flex justify-content-between mb-2 text-muted">
+                  <div className="d-flex justify-content-between mb-2 text-muted">
                     <span>Total Tax</span>
                     <strong>₹ {totalTax.toFixed(2)}</strong>
-                  </div> */}
+                  </div>
+
+                  <div className="d-flex justify-content-between mb-2">
+                    <span>MRP (Incl. Tax)</span>
+                    <strong>₹ {totalSubtotal.toFixed(2)}</strong>
+                  </div>
 
                   <div className="d-flex justify-content-between mb-2 text-success">
                     <span>Coupon Discount</span>
                     <strong>- ₹ {couponDiscount}</strong>
                   </div>
+
 
                   {appliedCoupon && (
                     <div className="p-2 mb-2 border rounded bg-light">

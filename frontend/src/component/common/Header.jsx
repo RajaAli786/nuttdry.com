@@ -162,6 +162,7 @@ const CustomNavbar = ({ setOpen }) => {
                     <li className="nav-item">Loading...</li>
                   ) : (
                     menuTree.map((menu) => (
+                      (menu.type !== 2 && menu.type !== 3) && (
                       <li key={menu.id} className="nav-item" >
 
                         {/* ===== Dropdown Menu ===== */}
@@ -199,6 +200,7 @@ const CustomNavbar = ({ setOpen }) => {
                         )}
 
                       </li>
+                      )
                     ))
                   )}
 

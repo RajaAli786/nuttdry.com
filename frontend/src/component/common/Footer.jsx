@@ -45,7 +45,7 @@ const Footer = () => {
         <div className="row">
           {/* ===== CUSTOMER CARE ===== */}
           <div className="col-md-3 mb-4">
-            <h5>Customer Care</h5>
+            <h5>Contact Us</h5>
 
             <p>
               <strong>Address:</strong> {footer.contact.address}
@@ -85,7 +85,7 @@ const Footer = () => {
           </div>
 
           <div className="col-md-3" >
-            <h5>ABOUT NUTTDRY</h5>
+            <h5>ABOUT US</h5>
             <ul className="list-unstyled mt-3">
             {footerMenu.map((footerMenu) => (
               footerMenu.type === 2 && (
@@ -117,11 +117,18 @@ const Footer = () => {
                 </NavLink>
               </li>
 
-              <li>
-                <NavLink to="/return-exchange" className="text-dark text-decoration-none">
-                  Return/Exchange
-                </NavLink>
-              </li>
+              {footerMenu.map((footerMenu) => (
+                  footerMenu.type === 3 && (
+                    <li key={footerMenu.id}>
+                      <NavLink
+                        to={`/${footerMenu.slug}`}
+                        className="text-dark text-decoration-none"
+                      >
+                        {footerMenu.title}
+                      </NavLink>
+                    </li>
+                  )
+                ))}
             </ul>
           </div>
 
