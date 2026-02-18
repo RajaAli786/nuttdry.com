@@ -9,16 +9,15 @@ import {
   Form,
   Button,
   Table,
-  Badge,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Layout from "./common/Layout";
 
+import { calculateTotals } from "../utils/calculateTotals";
+
 import {
   selectCartItems,
-  selectCartSubtotal,
   clearCart,
-  updateQty,
   selectDiscount,
   selectAppliedCoupon,
 } from "../redux/cartSlice";
@@ -31,7 +30,6 @@ function Checkout() {
   const navigate = useNavigate();
 
   const cartItems = useSelector(selectCartItems);
-  const subtotal = useSelector(selectCartSubtotal);
   const couponDiscount = useSelector(selectDiscount);
   const appliedCoupon = useSelector(selectAppliedCoupon);
 
@@ -48,29 +46,15 @@ function Checkout() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  /* ================= CALCULATIONS ================= */
-  const priceData = cartItems.map((item) => {
-    const unitPrice = Number(item.price) || 0;
-    const qty = Number(item.qty) || 0;
-    const taxPercent = Number(item.taxPercent) || 0;
+  /* ================= SAME CALCULATION AS CART ================= */
+  const {
+    priceData,
+    totalBaseAmount,
+    totalTax,
+    totalSubtotal,
+    grandTotal,
+  } = calculateTotals(cartItems, couponDiscount);
 
-    const subtotal = unitPrice * qty;
-    const taxAmount = (subtotal * taxPercent) / 100;
-    const finalAmount = subtotal - taxAmount;
-
-    return {
-      ...item,
-      subtotal,
-      taxAmount,
-      finalAmount,
-    };
-  });
-
-  const totalSubtotal = priceData.reduce((sum, item) => sum + item.subtotal, 0);
-  const totalTax = priceData.reduce((sum, item) => sum + item.taxAmount, 0);
-  const itemsTotal = priceData.reduce((sum, item) => sum + item.finalAmount, 0);
-  const grandTotall = Math.max(itemsTotal - couponDiscount, 0);
-  const grandTotal = Math.round(grandTotall);
   /* ================= PLACE ORDER ================= */
   const handlePlaceOrder = () => {
     if (!user) {
@@ -98,7 +82,6 @@ function Checkout() {
     });
   };
 
- console. log("cartItems:", cartItems);
   const handlePaymentSuccess = async (response) => {
     try {
       await api.post("/place-order", {
@@ -126,7 +109,9 @@ function Checkout() {
       <Layout>
         <Container className="py-5 text-center">
           <h3>Your cart is empty</h3>
-          <Button onClick={() => navigate("/products")}>Continue Shopping</Button>
+          <Button onClick={() => navigate("/products")}>
+            Continue Shopping
+          </Button>
         </Container>
       </Layout>
     );
@@ -136,8 +121,9 @@ function Checkout() {
     <Layout>
       <Container className="py-5">
         <h2 className="mb-4">Checkout</h2>
+
         <Row>
-          {/* LEFT */}
+          {/* LEFT SIDE */}
           <Col md={6}>
             <Card className="p-4 shadow-sm">
               <h4>Billing Details</h4>
@@ -153,6 +139,7 @@ function Checkout() {
                     />
                   </Form.Group>
                 ))}
+
                 <Form.Group>
                   <Form.Label>Address</Form.Label>
                   <Form.Control
@@ -167,12 +154,12 @@ function Checkout() {
             </Card>
           </Col>
 
-          {/* RIGHT */}
+          {/* RIGHT SIDE */}
           <Col md={6}>
             <Card className="p-4 shadow-sm">
               <h4>Order Summary</h4>
 
-              <Table borderless>
+              <Table className="table table-bordered">
                 <tbody>
                   {priceData.map((item) => (
                     <tr key={item.id}>
@@ -182,33 +169,46 @@ function Checkout() {
                         Qty: {item.qty}
                         <br />
                         Price: ₹ {item.price}
+
                         {item.taxPercent > 0 && (
                           <div className="text-muted small">
-                            Tax ({item.taxPercent}%): ₹ {item.taxAmount.toFixed(2)}
+                            Tax ({item.taxPercent}%): ₹{" "}
+                            {item.taxAmount.toFixed(2)}
                           </div>
                         )}
                       </td>
-                      <td className="text-end">₹ {item.finalAmount.toFixed(2)}</td>
+
+                      <td className="text-end" style={{ minWidth: "120px" }}>
+                        ₹ {item.finalAmount.toFixed(2)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </Table>
 
               {appliedCoupon && (
-                <div className="text-success mb-2">
-                  <strong>Coupon Applied:</strong> {appliedCoupon.title} (
-                  {appliedCoupon.type === "percent"
-                    ? `${appliedCoupon.value}%`
-                    : `₹ ${appliedCoupon.value}`}
-                  )
+                <div className="p-2 mb-2 border rounded bg-light">
+                  <div className="fw-semibold text-success">
+                    🎟 {appliedCoupon.title}
+                  </div>
+
+                  <small className="text-muted d-block">
+                    Code: {appliedCoupon.code}
+                  </small>
+
+                  <small className="text-muted">
+                    {appliedCoupon.type === "flat"
+                      ? `Flat ₹${Number(appliedCoupon.value).toFixed(2)} OFF`
+                      : `${appliedCoupon.value}% OFF`}
+                  </small>
                 </div>
               )}
 
               <hr />
 
               <div className="d-flex justify-content-between">
-                <span>Subtotal</span>
-                <strong>₹ {totalSubtotal.toFixed(2)}</strong>
+                <span>Base Amount</span>
+                <strong>₹ {totalBaseAmount.toFixed(2)}</strong>
               </div>
 
               <div className="d-flex justify-content-between text-muted">
@@ -216,10 +216,15 @@ function Checkout() {
                 <strong>₹ {totalTax.toFixed(2)}</strong>
               </div>
 
+              <div className="d-flex justify-content-between">
+                <span>Subtotal</span>
+                <strong>₹ {totalSubtotal.toFixed(2)}</strong>
+              </div>
+
               {couponDiscount > 0 && (
                 <div className="d-flex justify-content-between text-success">
                   <span>Coupon Discount</span>
-                  <strong>- ₹ {couponDiscount.toFixed(2)}</strong>
+                  <strong>- ₹ {Number(couponDiscount).toFixed(2)}</strong>
                 </div>
               )}
 

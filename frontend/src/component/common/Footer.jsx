@@ -41,11 +41,11 @@ const Footer = () => {
 
   return (
     <footer className="bg-light pt-5 border-top">
-      <div className="container">
+      <div className="container text-center ">
         <div className="row">
           {/* ===== CUSTOMER CARE ===== */}
-          <div className="col-md-3 mb-4">
-            <h5>Contact Us</h5>
+          <div className="col-md-3 mb-4 border-end" style={{"border-color": '#f1f1f1'}}>
+            <h5 className="text-decoration-underline mb-3">CONTACT US</h5>
 
             <p>
               <strong>Address:</strong> {footer.contact.address}
@@ -84,8 +84,8 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="col-md-3" >
-            <h5>ABOUT US</h5>
+          <div className="col-md-3 border-end" style={{"border-color": '#f1f1f1'}}>
+            <h5 className="text-decoration-underline mb-3">ABOUT US</h5>
             <ul className="list-unstyled mt-3">
             {footerMenu.map((footerMenu) => (
               footerMenu.type === 2 && (
@@ -102,8 +102,8 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-md-3" >
-            <h5>SUPPORT</h5>
+          <div className="col-md-3 border-end" style={{"border-color": '#f1f1f1'}}>
+            <h5 className="text-decoration-underline mb-3">SUPPORT</h5>
             <ul className="list-unstyled mt-3">
               <li>
                 <NavLink to="/login" className="text-dark text-decoration-none">
@@ -133,8 +133,8 @@ const Footer = () => {
           </div>
 
           {footer.map_link && footer.map_link.trim() !== "" && (
-            <div className="col-md-3 mb-4">
-              <h5>REACH US</h5>
+            <div className="col-md-3 mb-4 ">
+              <h5 className="text-decoration-underline mb-3">REACH US</h5>
               <iframe
                 src={footer.map_link}
                 width="100%"
